@@ -23,6 +23,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.ScoreSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -34,7 +35,8 @@ import gov.dot.its.datahub.webapi.model.SearchResponseModel;
 
 @Repository
 public class DataAssetDaoImpl implements DataAssetDao {
-	private static final String INDEX = "dataassets";
+	@Value("${datahub.webapi.es.index}")
+	private String index;
 	private static final String HIGHLIGHTER_TYPE = "plain";
 	private static final int FRAGMENT_SIZE = 5000;
 	private static final int NUMBER_OF_FRAGMENTS = 5;
@@ -47,7 +49,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 
 	@Override
 	public List<DataAsset> getDataAssets(String sortBy, String sortDirection, Integer limit) throws IOException, ElasticsearchStatusException {
-		SearchRequest searchRequest = new SearchRequest(INDEX);
+		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 
@@ -83,7 +85,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 
 	@Override
 	public DataAsset getDataAsset(String id) throws IOException {
-		SearchRequest searchRequest = new SearchRequest(INDEX);
+		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.termQuery("dhId", id));
 
@@ -112,7 +114,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	@Override
 	public SearchResponseModel<List<DataAsset>> searchDataAssetsByWords(SearchRequestModel searchRequestModel) throws IOException {
 
-		SearchRequest searchRequest = new SearchRequest(INDEX);
+		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
 		searchSourceBuilder.query(QueryBuilders.multiMatchQuery(searchRequestModel.getTerm(), "name", "description", "tags"));
@@ -158,7 +160,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	public SearchResponseModel<List<DataAsset>> searchDataAssetsByPhrase(SearchRequestModel searchRequestModel) throws IOException {
 
 		SearchTemplateRequest searchTemplateRequest = new SearchTemplateRequest();
-		searchTemplateRequest.setRequest(new SearchRequest(INDEX));
+		searchTemplateRequest.setRequest(new SearchRequest(index));
 		searchTemplateRequest.setScriptType(ScriptType.INLINE);
 		String queryTemplate = "{\n" +
 				"    \"query\": {\n" +
