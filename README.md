@@ -156,17 +156,12 @@ The following status codes are possible to have as part of a response.
 ## Configuration
 The API requires the following environment variables
 
- - server.servlet.context-path=/api
- - server.port = 3006
- - spring.data.elasticsearch.repositories.enabled=false
- - spring.data.elasticsearch.cluster-nodes=localhost:9200
- - spring.data.elasticsearch.cluster-name=elasticsearch
-
 |Name   |Required   |Default   |Description|
 |--|--|--|----|
 |datahub.webapi.es.host|mandatory||Sets the host of the target ElasticSearch|
 |datahub.webapi.es.port|mandatory||Sets the port that the target ElasticSearch is using.|
 |datahub.webapi.es.scheme|mandatory||Sets the protocol scheme used by the target ElasticSearch (http or https)|
+|datahub.webapi.es.index|optional|dataassets|Set the Index name to be used as main source of the data.|
 |server.servlet.context-path|optional|/api|Set the DataHub Web API context path|
 |server.port|optional|3006|Sets the DataHub Web API listening port|
 

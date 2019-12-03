@@ -23,5 +23,10 @@
     "name": "datahub.webapi.es.scheme",
     "type": "java.lang.String",
     "description": "A description for 'datahub.webapi.es.scheme'"
+  },
+  {
+    "name": "datahub.webapi.es.index",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.index'"
   }
 ]}
