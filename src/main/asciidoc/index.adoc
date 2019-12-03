@@ -1,0 +1,76 @@
+:toc: left
+:toclevels: 4
+
+
+= ITS DataHub
+
+== Web API
+WebApi to interface ITS DataHub https://www.elastic.co/products/enterprise-search[ElasticSearch] storage system.
+
+The information is presented through an structure (DataAsset) that contains the following properties.
+
+[options="header",cols="1,1,2"]
+|===
+|Name   |Type   |Description
+//-------------
+|*id*   |String   |Original ID
+|*name*   |String   |Name of the data asset.
+|*description*   |String   |Description of the data asset.
+|*accessLevel*   |String   |Access level (Public or Private).
+|*lastUpdate*   |Timestamp   |Last date and time that the data asset was updated.
+|*tags*   |List<String>   |List of Strings containing the tags.
+|*sourceUrl*   |String   |Url to the data asset data/site.
+|*dhId*   |String   |Internal DataHub ID to avoid collitions between data assets from different sources.
+|*dhLastUpdate*   |Timestamp   |Last time that record was update by the DataHub ingestion system.
+|*dhSourceName*   |String   |Data source identification.
+|*highlights*   |Map<String,List<String>>   |In the case of search this field contains the fragments where the search word/phrase was found.
+|*esScore*   |Float   |Contains the Elasticsearch score value after a search is executed.
+|===
+
+Two types of requests are defined:
+
+	* DataAssets
+
+		** URL: http://[host:port]/api/v1/dataassets
+		*** http://[host:port]/api/v1/dataassets/{dhId}
+		** Method: GET
+
+	* Search
+
+		** URL: http://[host:port]/api/v1/search
+		** Method: POST
+
+=== DataAssets
+Gets a list of all the Data Assets
+
+==== Request
+include::{snippets}/api/v1/dataassets/data/http-request.adoc[]
+
+===== cURL Sample
+include::{snippets}/api/v1/dataassets/data/curl-request.adoc[]
+
+
+==== Response
+
+===== Data available
+include::{snippets}/api/v1/dataassets/data/http-response.adoc[]
+
+===== No data available
+include::{snippets}/api/v1/dataassets/no-data/http-response.adoc[]
+
+===== Error
+include::{snippets}/api/v1/dataassets/error/http-response.adoc[]
+
+=== Search
+Search for words or phrase
+
+==== Request
+include::{snippets}/api/v1/search/data/http-request.adoc[]
+
+==== cURL Sample
+include::{snippets}/api/v1/search/data/curl-request.adoc[]
+
+==== Response
+
+===== Data available
+include::{snippets}/api/v1/search/data/http-response.adoc[]

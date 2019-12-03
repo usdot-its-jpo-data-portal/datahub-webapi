@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "datahub.webapi.es.host",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.host'"
+  },
+  {
+    "name": "datahub.webapi.es.port",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.port'"
+  },
+  {
+    "name": "datahub.webapi.es.protocol",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.protocol'"
+  },
+  {
+    "name": "datahub.webapi.debug",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.debug'"
+  },
+  {
+    "name": "datahub.webapi.es.scheme",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.scheme'"
+  },
+  {
+    "name": "datahub.webapi.es.index",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.index'"
+  }
+]}
