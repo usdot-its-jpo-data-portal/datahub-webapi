@@ -22,10 +22,12 @@ public class DataAsset {
 	private String dhSourceName;
 	private Map<String, List<String>> highlights;
 	private Float esScore;
+	private List<RelatedItemModel> related;
 
 	public DataAsset() {
 		this.tags = new ArrayList<>();
 		this.highlights = new HashMap<>();
+		this.related = new ArrayList<>();
 	}
 
 	public String getId() {
@@ -100,6 +102,14 @@ public class DataAsset {
 
 	public void setEsScore(Float esScore) {
 		this.esScore = esScore;
+	}
+
+	public List<RelatedItemModel> getRelated() {
+		return related;
+	}
+
+	public void setRelated(List<RelatedItemModel> related) {
+		this.related = related;
 	}
 
 }
