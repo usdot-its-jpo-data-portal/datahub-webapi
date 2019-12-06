@@ -37,6 +37,7 @@ import gov.dot.its.datahub.webapi.model.SearchResponseModel;
 public class DataAssetDaoImpl implements DataAssetDao {
 	@Value("${datahub.webapi.es.index}")
 	private String index;
+
 	private static final String HIGHLIGHTER_TYPE = "plain";
 	private static final int FRAGMENT_SIZE = 5000;
 	private static final int NUMBER_OF_FRAGMENTS = 5;
@@ -57,7 +58,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		if (!StringUtils.isEmpty(sortBy)) {
 			SortOrder sortOrder = SortOrder.ASC;
 			if (!StringUtils.isEmpty(sortDirection) && sortDirection.equalsIgnoreCase("desc")) {
-					sortOrder = SortOrder.DESC;
+				sortOrder = SortOrder.DESC;
 			}
 			searchSourceBuilder.sort(sortBy, sortOrder);
 		}

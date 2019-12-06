@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import gov.dot.its.datahub.webapi.dao.DataAssetDao;
+import gov.dot.its.datahub.webapi.dao.RelatedDao;
 import gov.dot.its.datahub.webapi.model.ApiError;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
+import gov.dot.its.datahub.webapi.model.RelatedItemModel;
 import gov.dot.its.datahub.webapi.model.SearchRequestModel;
 import gov.dot.its.datahub.webapi.model.SearchResponseModel;
 
@@ -29,6 +31,9 @@ public class SearchServiceImpl implements SearchService {
 
 	@Autowired
 	private DataAssetDao dataAssetDao;
+
+	@Autowired
+	private RelatedDao relatedDao;
 
 	@Value("${datahub.webapi.debug}")
 	private boolean isDebug;
@@ -59,6 +64,9 @@ public class SearchServiceImpl implements SearchService {
 
 			searchResponse.setSearchRequest(searchRequestModel);
 			if (searchResponse.getResult() != null && !searchResponse.getResult().isEmpty()) {
+
+				this.getRelatedInformation(searchResponse);
+
 				apiResponse.setResponse(HttpStatus.OK, searchResponse, null, null, request);
 				logger.info(RESPONSE_SEARCH_DATA + HttpStatus.OK.toString());
 				return apiResponse;
@@ -82,6 +90,26 @@ public class SearchServiceImpl implements SearchService {
 			apiResponse.setResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null, errors, request);
 			return apiResponse;
 		}
+	}
+
+	private void getRelatedInformation(SearchResponseModel<List<DataAsset>> searchResponse) {
+		if (searchResponse == null || searchResponse.getResult() == null || searchResponse.getResult().isEmpty()) {
+			return;
+		}
+
+		for(DataAsset dataAsset: searchResponse.getResult()) {
+			List<RelatedItemModel> relatedItems;
+			try {
+				relatedItems = relatedDao.getRelatedItems(dataAsset.getDhId());
+				if (relatedItems == null) {
+					continue;
+				}
+				dataAsset.setRelated(relatedItems);
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
+		}
+
 	}
 
 }
