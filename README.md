@@ -114,12 +114,12 @@ HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "timestamp" : "2019-10-30T21:44:43Z",
+  "timestamp" : "2019-12-06T15:10:56Z",
   "status" : "OK",
   "code" : 200,
   "path" : "http://localhost",
   "verb" : "POST",
-  "traceid" : "20191030214443440",
+  "traceid" : "20191206151056598",
   "result" : {
     "searchRequest" : {
       "term" : "Test",
@@ -133,13 +133,22 @@ Content-Type: application/json;charset=UTF-8
       "name" : "SampleDataAsset",
       "description" : "Description of the data asset",
       "accessLevel" : "Public",
-      "lastUpdate" : "2019-10-30T21:44:43.440+0000",
+      "lastUpdate" : "2019-12-06T15:10:56.598+0000",
       "tags" : [ "Sample tag number one", "Sample tag number two", "Sample tag number three" ],
       "sourceUrl" : "http://testing.com/id:1234",
       "dhId" : "intId",
-      "dhLastUpdate" : "2019-10-30T21:44:43.440+0000",
+      "dhLastUpdate" : "2019-12-06T15:10:56.598+0000",
       "dhSourceName" : "source",
-      "esScore" : 1.0
+      "esScore" : 1.0,
+      "related" : [ {
+        "id" : "585e203c4bf7b9ff12966fd9697b87cb",
+        "name" : "related1-name",
+        "url" : "http://related.item.com/id=585e203c4bf7b9ff12966fd9697b87cb"
+      }, {
+        "id" : "7f3bac27fc81d39ffa8ede58b39c8fb6",
+        "name" : "related2-name",
+        "url" : "http://related.item.com/id=7f3bac27fc81d39ffa8ede58b39c8fb6"
+      } ]
     } ]
   }
 }
@@ -161,7 +170,10 @@ The API requires the following environment variables
 |datahub.webapi.es.host|mandatory||Sets the host of the target ElasticSearch|
 |datahub.webapi.es.port|mandatory||Sets the port that the target ElasticSearch is using.|
 |datahub.webapi.es.scheme|mandatory||Sets the protocol scheme used by the target ElasticSearch (http or https)|
+|codehub.ui.url.endpoint|mandatory||Sets the CodeHub target URL ( http://[host]:[port] )|
+|codehub.ui.url.questring|optional|/#/project-details?id=|CodeHub query string for the project information page.|
 |datahub.webapi.es.index|optional|dataassets|Set the Index name to be used as main source of the data.|
+|datahub.webapi.es.related|optional|related|Set the Index name to be used as source of related CodeHub information|
 |server.servlet.context-path|optional|/api|Set the DataHub Web API context path|
 |server.port|optional|3006|Sets the DataHub Web API listening port|
 
@@ -190,7 +202,7 @@ It is important to setup the environment variables before to execute the applica
 ## Docker Support
 A [Docker](https://www.docker.com/) image can be build with the next command line.
 ```bash
-  docker build -t datahub-webapi:1.0.0 .
+  docker build -t datahub-webapi:1.1.0 .
 ```
 
 The following command with the correct values for the environment variable will start a Docker container.
@@ -200,13 +212,16 @@ docker run -p 3006:3006 --rm \
 -e "datahub.webapi.es.host=[HOST]" \
 -e "datahub.webapi.es.port=[PORT]" \
 -e "datahub.webapi.es.scheme=[SCHEME]" \
--t -i datahub-webapi:1.0.0
+-e "codehub.ui.url.endpoint=[CODEHUB-WEBHOST]" \
+-t -i datahub-webapi:1.1.0
 ```
 
 
 ## Release History
 * 1.0.0
   * Initial version
+* 1.1.0
+  * Add related CodeHub entries to the search result.
 
 
 ## Contact information

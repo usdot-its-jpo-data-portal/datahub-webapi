@@ -33,5 +33,20 @@
     "name": "datahub.webapi.es.related",
     "type": "java.lang.String",
     "description": "A description for 'datahub.webapi.es.related'"
+  },
+  {
+    "name": "datahub.webapi.es.index",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.es.index'"
+  },
+  {
+    "name": "codehub.ui.url.questring",
+    "type": "java.lang.String",
+    "description": "A description for 'codehub.ui.url.questring'"
+  },
+  {
+    "name": "codehub.ui.url.endpoint",
+    "type": "java.lang.String",
+    "description": "A description for 'codehub.ui.url.endpoint'"
   }
 ]}
