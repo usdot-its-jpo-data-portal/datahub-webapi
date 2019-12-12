@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.dot.its.datahub.webapi.business.SearchService;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
+import gov.dot.its.datahub.webapi.model.RelatedItemModel;
 import gov.dot.its.datahub.webapi.model.SearchRequestModel;
 import gov.dot.its.datahub.webapi.model.SearchResponseModel;
 
@@ -79,17 +80,17 @@ public class SearchControllerTest {
 				.contextPath(String.format("%s", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				.content(searchRequestModelStr)
 				)
-		.andExpect(status().isOk())
-		.andDo(document("api/v1/search/data",
-				Preprocessors.preprocessRequest(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						),
-				Preprocessors.preprocessResponse(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						)
-				));
+				.andExpect(status().isOk())
+				.andDo(document("api/v1/search/data",
+						Preprocessors.preprocessRequest(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								),
+						Preprocessors.preprocessResponse(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								)
+						));
 
 		MvcResult result = resultActions.andReturn();
 		String objString = result.getResponse().getContentAsString();
@@ -118,6 +119,20 @@ public class SearchControllerTest {
 		tags.add("Sample tag number two");
 		tags.add("Sample tag number three");
 		dataAsset.setTags(tags);
+
+		List<RelatedItemModel> relateds = new ArrayList<>();
+		RelatedItemModel relItem = new RelatedItemModel();
+		relItem.setId("585e203c4bf7b9ff12966fd9697b87cb");
+		relItem.setName("related1-name");
+		relItem.setUrl("http://related.item.com/id=585e203c4bf7b9ff12966fd9697b87cb");
+		relateds.add(relItem);
+		relItem = new RelatedItemModel();
+		relItem.setId("7f3bac27fc81d39ffa8ede58b39c8fb6");
+		relItem.setName("related2-name");
+		relItem.setUrl("http://related.item.com/id=7f3bac27fc81d39ffa8ede58b39c8fb6");
+		relateds.add(relItem);
+
+		dataAsset.setRelated(relateds);
 
 		List<DataAsset> dataAssets = new ArrayList<>();
 		dataAssets.add(dataAsset);

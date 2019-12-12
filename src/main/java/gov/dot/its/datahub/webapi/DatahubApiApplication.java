@@ -45,6 +45,8 @@ public class DatahubApiApplication {
 						environment.getProperty("datahub.webapi.es.port")
 						));
 				out.println(String.format(MESSAGE_TEMPLATE, "Target Index", environment.getProperty("datahub.webapi.es.index")));
+				out.println(String.format(MESSAGE_TEMPLATE, "Related Index", environment.getProperty("datahub.webapi.es.related")));
+				out.println(String.format(MESSAGE_TEMPLATE, "CodeHub EndPoint", environment.getProperty("codehub.ui.url.endpoint")));
 				out.println(String.format(MESSAGE_TEMPLATE, "Debug", environment.getProperty("datahub.webapi.debug")));
 
 				out.println(new String(new char[80]).replace("\0", "_"));

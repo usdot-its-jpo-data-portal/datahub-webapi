@@ -22,6 +22,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import gov.dot.its.datahub.webapi.dao.DataAssetDao;
+import gov.dot.its.datahub.webapi.dao.RelatedDao;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
 import gov.dot.its.datahub.webapi.model.SearchRequestModel;
@@ -39,6 +40,9 @@ public class SearchServiceTest {
 
 	@Mock
 	private DataAssetDao dataAssetDao;
+
+	@Mock
+	private RelatedDao relatedDao;
 
 	@Before
 	public void setUp() {
@@ -136,6 +140,7 @@ public class SearchServiceTest {
 		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModel(searchRequestModel);
 
 		when(dataAssetDao.searchDataAssetsByPhrase(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
+		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(null);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
@@ -158,6 +163,7 @@ public class SearchServiceTest {
 		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModel(searchRequestModel);
 
 		when(dataAssetDao.searchDataAssetsByWords(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
+		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(null);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
