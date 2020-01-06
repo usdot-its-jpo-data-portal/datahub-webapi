@@ -1,5 +1,5 @@
 # datahub-webapi
-DataHub Web API to consume data from  DataHub ElasticSearch storage system.
+DataHub Web API to consume data from  DataHub ElasticSearch storage system. 
 
 ## Usage
 Once the application is running on a configured port it is required to submit a GET request to retrive a list of datasets or individual dataset or a POST request to search for **words** or **phrases**.
