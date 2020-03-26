@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.dot.its.datahub.webapi.model.DataAsset;
@@ -76,6 +77,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
 			dataAsset.setEsScore(getHitScore(hit));
 			result.add(dataAsset);
@@ -105,6 +107,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			result = mapper.convertValue(sourceAsMap, DataAsset.class);
 			result.setEsScore(getHitScore(hit));
 		}
@@ -219,6 +222,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
 
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
 			dataAsset.setEsScore(getHitScore(hit));
 			Map<String, HighlightField> highlightFields = hit.getHighlightFields();
