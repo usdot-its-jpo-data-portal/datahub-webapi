@@ -55,23 +55,28 @@ HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "timestamp" : "2019-10-30T21:44:42Z",
+  "timestamp" : "2020-03-26T17:26:34Z",
   "status" : "OK",
   "code" : 200,
   "path" : "http://localhost",
   "verb" : "GET",
-  "traceid" : "20191030214442965",
+  "traceid" : "20200326172634138",
   "result" : [ {
     "id" : "test:1234",
     "name" : "Different Approaches to Disseminating Traveler Information",
     "description" : "Source: Provided by ITS DataHub through the National Transportation Library.",
     "accessLevel" : "Public",
-    "lastUpdate" : "2019-10-30T21:44:42.965+0000",
+    "lastUpdate" : "2020-03-26T17:26:34.138+0000",
     "tags" : [ "Definitions", "Human factors", "Information dissemination" ],
     "sourceUrl" : "https://source.example.com/view/test/1234",
     "dhId" : "s1-test:1234",
-    "dhLastUpdate" : "2019-10-30T21:44:42.965+0000",
-    "dhSourceName" : "s1"
+    "dhLastUpdate" : "2020-03-26T17:26:34.138+0000",
+    "dhSourceName" : "s1",
+    "metrics" : {
+      "downloadsTotal" : 5,
+      "pageViewsLastMonth" : 15,
+      "pageViewsTotal" : 25
+    }
   } ]
 }
 ```
@@ -114,12 +119,12 @@ HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 
 {
-  "timestamp" : "2019-12-06T15:10:56Z",
+  "timestamp" : "2020-03-26T17:34:17Z",
   "status" : "OK",
   "code" : 200,
   "path" : "http://localhost",
   "verb" : "POST",
-  "traceid" : "20191206151056598",
+  "traceid" : "20200326173417998",
   "result" : {
     "searchRequest" : {
       "term" : "Test",
@@ -133,11 +138,11 @@ Content-Type: application/json;charset=UTF-8
       "name" : "SampleDataAsset",
       "description" : "Description of the data asset",
       "accessLevel" : "Public",
-      "lastUpdate" : "2019-12-06T15:10:56.598+0000",
+      "lastUpdate" : "2020-03-26T17:34:17.998+0000",
       "tags" : [ "Sample tag number one", "Sample tag number two", "Sample tag number three" ],
       "sourceUrl" : "http://testing.com/id:1234",
       "dhId" : "intId",
-      "dhLastUpdate" : "2019-12-06T15:10:56.598+0000",
+      "dhLastUpdate" : "2020-03-26T17:34:17.997+0000",
       "dhSourceName" : "source",
       "esScore" : 1.0,
       "related" : [ {
@@ -148,7 +153,12 @@ Content-Type: application/json;charset=UTF-8
         "id" : "7f3bac27fc81d39ffa8ede58b39c8fb6",
         "name" : "related2-name",
         "url" : "http://related.item.com/id=7f3bac27fc81d39ffa8ede58b39c8fb6"
-      } ]
+      } ],
+      "metrics" : {
+        "downloadsTotal" : 5,
+        "pageViewsLastMonth" : 15,
+        "pageViewsTotal" : 25
+      }
     } ]
   }
 }
@@ -182,7 +192,7 @@ The API requires the following environment variables
 The API is a Java application and can be executed updating the values of the following command template.
 
 ```bash
-sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.0.0.jar"
+sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.2.0.jar"
 ```
 It is important to setup the environment variables before to execute the application.
 
@@ -202,7 +212,7 @@ It is important to setup the environment variables before to execute the applica
 ## Docker Support
 A [Docker](https://www.docker.com/) image can be build with the next command line.
 ```bash
-  docker build -t datahub-webapi:1.1.0 .
+  docker build -t datahub-webapi:latest .
 ```
 
 The following command with the correct values for the environment variable will start a Docker container.
@@ -213,7 +223,7 @@ docker run -p 3006:3006 --rm \
 -e "datahub.webapi.es.port=[PORT]" \
 -e "datahub.webapi.es.scheme=[SCHEME]" \
 -e "codehub.ui.url.endpoint=[CODEHUB-WEBHOST]" \
--t -i datahub-webapi:1.1.0
+-t -i datahub-webapi:latest
 ```
 
 
@@ -222,6 +232,8 @@ docker run -p 3006:3006 --rm \
   * Initial version
 * 1.1.0
   * Add related CodeHub entries to the search result.
+* 1.2.0
+  * Adding Metrics to DataAssets
 
 
 ## Contact information
