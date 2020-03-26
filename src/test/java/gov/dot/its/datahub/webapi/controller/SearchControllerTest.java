@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.dot.its.datahub.webapi.business.SearchService;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
+import gov.dot.its.datahub.webapi.model.Metrics;
 import gov.dot.its.datahub.webapi.model.RelatedItemModel;
 import gov.dot.its.datahub.webapi.model.SearchRequestModel;
 import gov.dot.its.datahub.webapi.model.SearchResponseModel;
@@ -133,6 +134,13 @@ public class SearchControllerTest {
 		relateds.add(relItem);
 
 		dataAsset.setRelated(relateds);
+
+		Metrics metrics = new Metrics();
+		metrics.setDownloadsTotal(5L);
+		metrics.setPageViewsLastMonth(15L);
+		metrics.setPageViewsTotal(25L);
+
+		dataAsset.setMetrics(metrics);
 
 		List<DataAsset> dataAssets = new ArrayList<>();
 		dataAssets.add(dataAsset);

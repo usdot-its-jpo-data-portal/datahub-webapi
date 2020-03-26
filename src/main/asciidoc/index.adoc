@@ -1,11 +1,11 @@
 :toc: left
 :toclevels: 4
-
+:snippets: ../../../target/generated-snippets
 
 = ITS DataHub
 
 == Web API
-`version: 1.1.0`
+`version: 1.2.0`
 
 WebApi to interface ITS DataHub https://www.elastic.co/products/enterprise-search[ElasticSearch] storage system.
 
@@ -14,10 +14,9 @@ The information is presented through an structure (DataAsset) that contains the 
 === Change Log
 Changes related to the previous version.
 
-`Previous version: 1.0.0`
+`Previous version: 1.1.0`
 
-* Addition of **related** property to the DataAsset structure of type _List<RelatedItemModel>_.
-* Addition of structure **RelatedItemModel** that contains the information of the related project in CodeHub.
+* Addition of **metrics** property to the DataAssets structure of type _Metrics_.
 
 === DataAsset
 
@@ -38,6 +37,7 @@ Changes related to the previous version.
 |*highlights*   |Map<String,List<String>>   |In the case of search this field contains the fragments where the search word/phrase was found.
 |*esScore*   |Float   |Contains the Elasticsearch score value after a search is executed.
 |*related*   |List<RelatedItemModel>   |List of related CodeHub items
+|*metrics*   |**Metrics**   |Contains the metrics values for the current DataAsset.
 |===
 
 === RelatedItemModel
@@ -49,6 +49,17 @@ Changes related to the previous version.
 |*id*   |String   |Related item id (CodeHub Project ID)
 |*name*   |String   |Related item name (CodeHub Project Name)
 |*sourceUrl*   |String   |Url to related item in CodeHub
+|===
+
+=== Metrics
+
+[options="header",cols="1,1,2"]
+|===
+|Name   |Type   |Description
+//-------------
+|*downloadsTotal*   |Long   |Number of total downloads
+|*pageViewsLastMonth*   |Long   |Number of page views during last month
+|*pageViewsTotal*   |Long   |Total number of page views
 |===
 
 Two types of requests are defined:
