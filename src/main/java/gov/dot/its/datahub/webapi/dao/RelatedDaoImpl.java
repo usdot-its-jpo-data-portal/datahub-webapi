@@ -11,6 +11,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.dot.its.datahub.webapi.model.RelatedItemModel;
@@ -46,6 +47,7 @@ public class RelatedDaoImpl implements RelatedDao {
 			Map<String, Object> sourceAsMap = getResponse.getSourceAsMap();
 
 			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			RelatedModel relatedModel = mapper.convertValue(sourceAsMap, RelatedModel.class);
 
 			this.buildTargetUrls(relatedModel);

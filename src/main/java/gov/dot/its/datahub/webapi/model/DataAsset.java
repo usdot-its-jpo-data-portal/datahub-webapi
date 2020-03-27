@@ -23,6 +23,7 @@ public class DataAsset {
 	private Map<String, List<String>> highlights;
 	private Float esScore;
 	private List<RelatedItemModel> related;
+	private Metrics metrics;
 
 	public DataAsset() {
 		this.tags = new ArrayList<>();
@@ -111,5 +112,14 @@ public class DataAsset {
 	public void setRelated(List<RelatedItemModel> related) {
 		this.related = related;
 	}
+
+	public Metrics getMetrics() {
+		return metrics;
+	}
+
+	public void setMetrics(Metrics metrics) {
+		this.metrics = metrics;
+	}
+
 
 }

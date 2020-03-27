@@ -37,6 +37,7 @@ import gov.dot.its.datahub.webapi.business.DataAssetService;
 import gov.dot.its.datahub.webapi.model.ApiError;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
+import gov.dot.its.datahub.webapi.model.Metrics;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(DataAssetController.class)
@@ -78,18 +79,18 @@ public class DataAssetControllerTest {
 				get(String.format(TEST_DATAASSETS_URL, env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				.contextPath(String.format("%s", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				)
-		.andExpect(status().isOk())
-		.andDo(document("api/v1/dataassets/data",
-				Preprocessors.preprocessRequest(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						),
-				Preprocessors.preprocessResponse(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						)
+				.andExpect(status().isOk())
+				.andDo(document("api/v1/dataassets/data",
+						Preprocessors.preprocessRequest(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								),
+						Preprocessors.preprocessResponse(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								)
 
-				));
+						));
 
 		MvcResult result = resultActions.andReturn();
 		String objString = result.getResponse().getContentAsString();
@@ -131,18 +132,18 @@ public class DataAssetControllerTest {
 				get(String.format(TEST_DATAASSETS_URL, env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				.contextPath(String.format("%s", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				)
-		.andExpect(status().isOk())
-		.andDo(document("api/v1/dataassets/no-data",
-				Preprocessors.preprocessRequest(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						),
-				Preprocessors.preprocessResponse(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						)
+				.andExpect(status().isOk())
+				.andDo(document("api/v1/dataassets/no-data",
+						Preprocessors.preprocessRequest(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								),
+						Preprocessors.preprocessResponse(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								)
 
-				));
+						));
 
 		MvcResult result = resultActions.andReturn();
 		String objString = result.getResponse().getContentAsString();
@@ -174,18 +175,18 @@ public class DataAssetControllerTest {
 				get(String.format(TEST_DATAASSETS_URL, env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				.contextPath(String.format("%s", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				)
-		.andExpect(status().isOk())
-		.andDo(document("api/v1/dataassets/error",
-				Preprocessors.preprocessRequest(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						),
-				Preprocessors.preprocessResponse(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						)
+				.andExpect(status().isOk())
+				.andDo(document("api/v1/dataassets/error",
+						Preprocessors.preprocessRequest(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								),
+						Preprocessors.preprocessResponse(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								)
 
-				));
+						));
 
 		MvcResult result = resultActions.andReturn();
 		String objString = result.getResponse().getContentAsString();
@@ -219,18 +220,18 @@ public class DataAssetControllerTest {
 				get(String.format(TEST_DATAASSETS_URL+"?sortby=lastUpdate&sortOrder=desc&limit=10", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				.contextPath(String.format("%s", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
 				)
-		.andExpect(status().isOk())
-		.andDo(document("api/v1/dataassets/queryparams",
-				Preprocessors.preprocessRequest(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						),
-				Preprocessors.preprocessResponse(
-						Preprocessors.prettyPrint(),
-						Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
-						)
+				.andExpect(status().isOk())
+				.andDo(document("api/v1/dataassets/queryparams",
+						Preprocessors.preprocessRequest(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								),
+						Preprocessors.preprocessResponse(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								)
 
-				));
+						));
 
 		MvcResult result = resultActions.andReturn();
 		String objString = result.getResponse().getContentAsString();
@@ -252,6 +253,11 @@ public class DataAssetControllerTest {
 		tags.add("Human factors");
 		tags.add("Information dissemination");
 
+		Metrics metrics = new Metrics();
+		metrics.setDownloadsTotal(5L);
+		metrics.setPageViewsLastMonth(15L);
+		metrics.setPageViewsTotal(25L);
+
 		DataAsset dataAsset = new DataAsset();
 		dataAsset.setId("test:1234");
 		dataAsset.setName("Different Approaches to Disseminating Traveler Information");
@@ -263,6 +269,7 @@ public class DataAssetControllerTest {
 		dataAsset.setDhId("s1-test:1234");
 		dataAsset.setDhLastUpdate(new Timestamp(System.currentTimeMillis()));
 		dataAsset.setDhSourceName("s1");
+		dataAsset.setMetrics(metrics);
 
 		return dataAsset;
 	}
