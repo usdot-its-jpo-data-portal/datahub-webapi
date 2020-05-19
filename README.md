@@ -2,9 +2,9 @@
 DataHub Web API to consume data from  DataHub ElasticSearch storage system.
 
 ## Usage
-Once the application is running on a configured port it is required to submit a GET request to retrive a list of datasets or individual dataset or a POST request to search for **words** or **phrases**.
+Once the application is running on a configured port it is required to submit a GET request to retrieve a list of datasets or individual dataset or a POST request to search for **words** or **phrases**.
 
-Two endpoints were defined to request for data:
+The following endpoints were defined to request for data:
 
 ### DataAssets
 
@@ -44,6 +44,14 @@ curl 'http://example.com:3006/api/v1/search' -i -X POST \
   "limit" : 10
 }'
 ```
+
+### Configuration - Engagement Popup
+
+To list a set of Engagement Popups.
+
+  - Method: GET
+  - URL: http://[host:port]/api/v1/configurations/engagementpopups
+
 
 ### Response
 The response object provides a general response information and the actual data is associated with the "result" property.
@@ -164,6 +172,44 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
+#### Configuration Engagement Popup
+
+The response object provides general response information. The actual data is associated with the "result" property, and will contain an array of the available Engagement Popups.
+
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+
+{
+  "timestamp" : "2020-05-14T18:27:28Z",
+  "status" : "OK",
+  "code" : 200,
+  "path" : "http://localhost",
+  "verb" : "GET",
+  "traceid" : "20200514182728965",
+  "result" : [ {
+    "id" : "71b8984d-fdb1-4f6b-8163-2f380090b298",
+    "name" : "Engagement Popup 0",
+    "description" : "Description-0",
+    "lastModified" : "2020-05-14T18:27:28.964+0000",
+    "content" : "<h1>Content-0</h1>",
+    "controlsColor" : "white",
+    "controlsShadow" : "black",
+    "isActive" : true
+  }, {
+    "id" : "2d7b43a2-e204-4276-ba80-fe4e9dda1335",
+    "name" : "Engagement Popup 1",
+    "description" : "Description-1",
+    "lastModified" : "2020-05-14T18:27:28.964+0000",
+    "content" : "<h1>Content-1</h1>",
+    "controlsColor" : "white",
+    "controlsShadow" : "black",
+    "isActive" : true
+  } ]
+}
+```
+
+
 The following status codes are possible to have as part of a response.
 
 - 200 : The request was successfull and there is data available.
@@ -186,13 +232,15 @@ The API requires the following environment variables
 |datahub.webapi.es.related|optional|related|Set the Index name to be used as source of related CodeHub information|
 |server.servlet.context-path|optional|/api|Set the DataHub Web API context path|
 |server.port|optional|3006|Sets the DataHub Web API listening port|
+|datahub.webapi.configurations.index|optional|configurations|Set the Index that stores the configuration.|
+|datahub.webapi.configurations.default|optional|datahub-default-configuration|Id of the document that has the configurations information.|
 
 
 ## Installation
 The API is a Java application and can be executed updating the values of the following command template.
 
 ```bash
-sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.2.0.jar"
+sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.3.0.jar"
 ```
 It is important to setup the environment variables before to execute the application.
 
@@ -206,7 +254,7 @@ It is important to setup the environment variables before to execute the applica
 > The API was developed using [Spring Tool Suite 4](https://spring.io/tools/) that is base on [Eclipse](https://www.eclipse.org/ide/)
 
 1. Install and open Spring Tool Suit
-2. Configure the required enviroment variables
+2. Configure the required environment variables
 3. Debug/Run as Spring Boot application, after this step the application will be running and ready to receive request.
 
 ## Docker Support
@@ -223,6 +271,7 @@ docker run -p 3006:3006 --rm \
 -e "datahub.webapi.es.port=[PORT]" \
 -e "datahub.webapi.es.scheme=[SCHEME]" \
 -e "codehub.ui.url.endpoint=[CODEHUB-WEBHOST]" \
+-e "JAVA_OPTS=-Xmx512M -Xms512M" \
 -t -i datahub-webapi:latest
 ```
 
@@ -234,6 +283,8 @@ docker run -p 3006:3006 --rm \
   * Add related CodeHub entries to the search result.
 * 1.2.0
   * Adding Metrics to DataAssets
+* 1.3.0
+  * Support for Configurations - Engagement Popups
 
 
 ## Contact information

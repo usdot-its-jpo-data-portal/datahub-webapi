@@ -1,11 +1,11 @@
 :toc: left
-:toclevels: 4
+:toclevels: 2
 :snippets: ../../../target/generated-snippets
 
 = ITS DataHub
 
 == Web API
-`version: 1.2.0`
+`version: 1.3.0`
 
 WebApi to interface ITS DataHub https://www.elastic.co/products/enterprise-search[ElasticSearch] storage system.
 
@@ -14,9 +14,9 @@ The information is presented through an structure (DataAsset) that contains the 
 === Change Log
 Changes related to the previous version.
 
-`Previous version: 1.1.0`
+`Previous version: 1.2.0`
 
-* Addition of **metrics** property to the DataAssets structure of type _Metrics_.
+* Addition of **Engagement Popups** as part of a **Configuration** structure..
 
 === DataAsset
 
@@ -62,7 +62,30 @@ Changes related to the previous version.
 |*pageViewsTotal*   |Long   |Total number of page views
 |===
 
-Two types of requests are defined:
+=== DHConfiguration
+[options="header",cols="1,1,2"]
+|===
+|Name   |Type   |Description
+//-------------
+|*id*   |String   |Unique ID
+|*name*   |String   |Configuration Name
+|*engagementPopups*   |List<**DHEngagementPopup**>   |List of available Engagement Popups
+|===
+
+=== DHEngagementPopup
+[options="header",cols="1,1,2"]
+|===
+|Name   |Type   |Description
+//-------------
+|id|String|UUID for the Engagement Popup (dynamically generated)
+|name|String|Engagement Popup Name.
+|description|String|Description for the Engagement Popup.
+|isActive|boolean|Flag that defines which of the Engagement Popup is active (just one for all the collection).
+|lastModified|Date|Last Date when the Engagement Popup was modified.
+|content|String|HTML source code that will be displayed in the Engagement Popup.
+|===
+
+The following types of requests are defined:
 
 	* DataAssets
 
@@ -74,6 +97,11 @@ Two types of requests are defined:
 
 		** URL: http://[host:port]/api/v1/search
 		** Method: POST
+
+	* Configuration - Engagement Popup
+
+		** URL: http://[host:port]/api/v1/configurations/engagementpopups
+		** Method: GET
 
 === DataAssets
 Gets a list of all the Data Assets
@@ -109,3 +137,17 @@ include::{snippets}/api/v1/search/data/curl-request.adoc[]
 
 ===== Data available
 include::{snippets}/api/v1/search/data/http-response.adoc[]
+
+=== Configuration - Engagement Popup
+Returns configured Engagement Popups
+
+==== Request
+include::{snippets}/api/v1/configurations/engagementpopups/get/data/http-request.adoc[]
+
+==== cURL Sample
+include::{snippets}/api/v1/configurations/engagementpopups/get/data/curl-request.adoc[]
+
+==== Response
+
+===== Data available
+include::{snippets}/api/v1/configurations/engagementpopups/get/data/http-response.adoc[]

@@ -48,5 +48,20 @@
     "name": "codehub.ui.url.endpoint",
     "type": "java.lang.String",
     "description": "A description for 'codehub.ui.url.endpoint'"
+  },
+  {
+    "name": "datahub.webapi.configurations.default",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.configurations.default'"
+  },
+  {
+    "name": "datahub.webapi.configurations.index",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.configurations.index'"
+  },
+  {
+    "name": "datahub.webapi.configurations.default",
+    "type": "java.lang.String",
+    "description": "A description for 'datahub.webapi.configurations.default'"
   }
 ]}
