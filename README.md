@@ -174,7 +174,7 @@ Content-Type: application/json;charset=UTF-8
 
 #### Configuration Engagement Popup
 
-The response object provides a general response information and the actual data is associated with the "result" property, in this case will contains an array of the available Engagement Popups.
+The response object provides general response information. The actual data is associated with the "result" property, and will contain an array of the available Engagement Popups.
 
 ```json
 HTTP/1.1 200 OK
