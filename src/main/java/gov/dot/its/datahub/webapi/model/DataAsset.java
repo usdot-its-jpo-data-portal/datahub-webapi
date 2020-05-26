@@ -24,6 +24,7 @@ public class DataAsset {
 	private Float esScore;
 	private List<RelatedItemModel> related;
 	private Metrics metrics;
+	private String dhType;
 
 	public DataAsset() {
 		this.tags = new ArrayList<>();
@@ -121,5 +122,11 @@ public class DataAsset {
 		this.metrics = metrics;
 	}
 
+	public String getDhType() {
+		return dhType;
+	}
 
+	public void setDhType(String dhType) {
+		this.dhType = dhType;
+	}
 }

@@ -270,6 +270,7 @@ public class DataAssetControllerTest {
 		dataAsset.setDhLastUpdate(new Timestamp(System.currentTimeMillis()));
 		dataAsset.setDhSourceName("s1");
 		dataAsset.setMetrics(metrics);
+		dataAsset.setDhType("[Dataset or Document]");
 
 		return dataAsset;
 	}
