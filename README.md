@@ -240,7 +240,7 @@ The API requires the following environment variables
 The API is a Java application and can be executed updating the values of the following command template.
 
 ```bash
-sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.3.0.jar"
+sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.4.0.jar"
 ```
 It is important to setup the environment variables before to execute the application.
 
@@ -285,6 +285,8 @@ docker run -p 3006:3006 --rm \
   * Adding Metrics to DataAssets
 * 1.3.0
   * Support for Configurations - Engagement Popups
+* 1.4.0
+  * Adding dhType to differentiate between Dataset and Article
 
 
 ## Contact information

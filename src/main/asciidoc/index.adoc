@@ -5,7 +5,7 @@
 = ITS DataHub
 
 == Web API
-`version: 1.3.0`
+`version: 1.4.0`
 
 WebApi to interface ITS DataHub https://www.elastic.co/products/enterprise-search[ElasticSearch] storage system.
 
@@ -14,9 +14,9 @@ The information is presented through an structure (DataAsset) that contains the 
 === Change Log
 Changes related to the previous version.
 
-`Previous version: 1.2.0`
+`Previous version: 1.3.0`
 
-* Addition of **Engagement Popups** as part of a **Configuration** structure..
+* Addition of **dhType** to differentiate between Dataset and Document (Article).
 
 === DataAsset
 
@@ -38,6 +38,7 @@ Changes related to the previous version.
 |*esScore*   |Float   |Contains the Elasticsearch score value after a search is executed.
 |*related*   |List<RelatedItemModel>   |List of related CodeHub items
 |*metrics*   |**Metrics**   |Contains the metrics values for the current DataAsset.
+|*dhType*   |String   |Differentiate between a Dataset and Document (Article).
 |===
 
 === RelatedItemModel
