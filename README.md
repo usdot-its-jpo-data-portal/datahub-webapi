@@ -240,7 +240,7 @@ The API requires the following environment variables
 The API is a Java application and can be executed updating the values of the following command template.
 
 ```bash
-sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.4.0.jar"
+sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.5.0.jar"
 ```
 It is important to setup the environment variables before to execute the application.
 
@@ -266,11 +266,11 @@ A [Docker](https://www.docker.com/) image can be build with the next command lin
 The following command with the correct values for the environment variable will start a Docker container.
 ```bash
 docker run -p 3006:3006 --rm \
--e "server.port=3006" \
--e "datahub.webapi.es.host=[HOST]" \
--e "datahub.webapi.es.port=[PORT]" \
--e "datahub.webapi.es.scheme=[SCHEME]" \
--e "codehub.ui.url.endpoint=[CODEHUB-WEBHOST]" \
+-e "SERVER_PORT=3006" \
+-e "DATAHUB_WEBAPI_ES_HOST=[HOST]" \
+-e "DATAHUB_WEBAPI_ES_PORT=[PORT]" \
+-e "DATAHUB_WEBAPI_ES_SCHEME=[SCHEME]" \
+-e "CODEHUB_UI_URL_ENDPOINT=[CODEHUB-WEBHOST]" \
 -e "JAVA_OPTS=-Xmx512M -Xms512M" \
 -t -i datahub-webapi:latest
 ```
@@ -287,7 +287,8 @@ docker run -p 3006:3006 --rm \
   * Support for Configurations - Engagement Popups
 * 1.4.0
   * Adding dhType to differentiate between Dataset and Article
-
+* 1.5.0
+  * Upgrade Java version from 8 to 11.
 
 ## Contact information
 Joe Doe : X@Y
