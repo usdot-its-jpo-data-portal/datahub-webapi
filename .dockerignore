@@ -1,0 +1,8 @@
+.mvn/
+.scannerwork/
+.vscode/
+.git/
+.gitignore
+target/
+Dockerfile
+sonar-project.properties

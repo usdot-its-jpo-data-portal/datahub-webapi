@@ -1,4 +1,4 @@
-FROM maven:3.6.1-jdk-8-alpine as builder
+FROM maven:3.6.3-jdk-11-slim as builder
 
 WORKDIR /home
 
@@ -6,11 +6,13 @@ COPY . .
 
 RUN mvn clean package
 
-FROM openjdk:8u212-jre-alpine
+FROM openjdk:11.0.8-jre-slim
 
-RUN apk add curl
+RUN apt-get update \
+&& apt-get install curl -y \
+&& apt-get clean
 
 COPY --from=builder /home/src/main/resources/application.properties application.properties
-COPY --from=builder /home/target/datahub-webapi-1.4.0.jar datahub-webapi-1.4.0.jar
+COPY --from=builder /home/target/datahub-webapi-1.5.0.jar datahub-webapi-1.5.0.jar
 
-ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.4.0.jar" ]
+ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.5.0.jar" ]
