@@ -8,7 +8,7 @@ The following endpoints were defined to request for data:
 
 ### DataAssets
 
-To list a set of datasets.
+To list a set of datasets:
 
   - Method: GET
   - URL: http://[host:port]/api/v1/dataassets?sortby=lastUpdate&sortorder=desc&limit=10
@@ -240,7 +240,7 @@ The API requires the following environment variables
 The API is a Java application and can be executed updating the values of the following command template.
 
 ```bash
-sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.5.0.jar"
+sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.6.0.jar"
 ```
 It is important to setup the environment variables before to execute the application.
 
@@ -289,6 +289,8 @@ docker run -p 3006:3006 --rm \
   * Adding dhType to differentiate between Dataset and Article
 * 1.5.0
   * Upgrade Java version from 8 to 11.
+* 1.6.0
+  * Integration with SonarCloud
 
 ## Contact information
 Joe Doe : X@Y

@@ -13,6 +13,6 @@ RUN apt-get update \
 && apt-get clean
 
 COPY --from=builder /home/src/main/resources/application.properties application.properties
-COPY --from=builder /home/target/datahub-webapi-1.5.0.jar datahub-webapi-1.5.0.jar
+COPY --from=builder /home/target/datahub-webapi-1.6.0.jar datahub-webapi-1.6.0.jar
 
-ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.5.0.jar" ]
+ENTRYPOINT ["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.6.0.jar" ]
