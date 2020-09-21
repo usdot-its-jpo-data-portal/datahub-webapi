@@ -8,7 +8,7 @@ The following endpoints were defined to request for data:
 
 ### DataAssets
 
-To list a set of datasets.
+To list a set of datasets:
 
   - Method: GET
   - URL: http://[host:port]/api/v1/dataassets?sortby=lastUpdate&sortorder=desc&limit=10
