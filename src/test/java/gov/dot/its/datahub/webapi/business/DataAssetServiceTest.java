@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import gov.dot.its.datahub.webapi.MockDataDataAsset;
 import gov.dot.its.datahub.webapi.dao.DataAssetDao;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
@@ -35,6 +35,8 @@ public class DataAssetServiceTest {
 	private static final String TEST_SORT_ORDER_NAME = "sortOrder";
 	private static final String TEST_LIMIT_NAME = "limit";
 
+	private MockDataDataAsset mockData;
+
 	@InjectMocks
 	private DataAssetServiceImpl dataAssetService;
 
@@ -44,6 +46,10 @@ public class DataAssetServiceTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
+	}
+
+	public DataAssetServiceTest() {
+		this.mockData = new MockDataDataAsset();
 	}
 
 	@Test
@@ -89,7 +95,7 @@ public class DataAssetServiceTest {
 		params.put(TEST_SORT_ORDER_NAME, "asc");
 		params.put(TEST_LIMIT_NAME, "10");
 
-		List<DataAsset> dataAssets = this.getFakeDataAssets();
+		List<DataAsset> dataAssets = this.mockData.getFakeDataAssets();
 
 		when(dataAssetDao.getDataAssets(any(String.class), any(String.class), anyInt())).thenReturn(dataAssets);
 
@@ -168,7 +174,7 @@ public class DataAssetServiceTest {
 	public void testFindByIdData() throws IOException {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 
-		DataAsset dataAsset = this.getFakeDataAsset();
+		DataAsset dataAsset = this.mockData.getFakeDataAsset(TEST_ID);
 
 		when(dataAssetDao.getDataAsset(any(String.class))).thenReturn(dataAsset);
 
@@ -211,35 +217,4 @@ public class DataAssetServiceTest {
 		assertTrue(!apiResponse.getErrors().isEmpty());
 	}
 
-	private DataAsset getFakeDataAsset() {
-		DataAsset dataAsset = new DataAsset();
-		dataAsset.setAccessLevel("Public");
-		dataAsset.setDescription("Data Asset Description");
-		dataAsset.setDhId("DHID");
-		dataAsset.setDhLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setDhSourceName("Test");
-		dataAsset.setHighlights(null);
-		dataAsset.setId(TEST_ID);
-		dataAsset.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setName("Test");
-		dataAsset.setSourceUrl("http://test.com/"+TEST_ID);
-
-		List<String> tags = new ArrayList<>();
-		tags.add("Test tag 1");
-		tags.add("Test tag 2");
-		tags.add("Test tag 3");
-
-		dataAsset.setTags(tags);
-
-		return dataAsset;
-	}
-
-	private List<DataAsset> getFakeDataAssets() {
-		List<DataAsset> dataAssets = new ArrayList<>();
-
-		DataAsset dataAsset = this.getFakeDataAsset();
-
-		dataAssets.add(dataAsset);
-		return dataAssets;
-	}
 }

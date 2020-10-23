@@ -41,7 +41,7 @@ public class SearchServiceImpl implements SearchService {
 	@Override
 	public ApiResponse<SearchResponseModel<List<DataAsset>>> searchDataAssets(HttpServletRequest request, SearchRequestModel searchRequestModel) {
 		logger.info("Request: Search Data Asset.");
-		final String RESPONSE_SEARCH_DATA = "Response: Search Data Asset, ";
+		final String RESPONSE_SEARCH_DATA = "Response: Search Data Asset, {}";
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = new ApiResponse<>();
 		List<ApiError> errors = new ArrayList<>();
@@ -49,7 +49,7 @@ public class SearchServiceImpl implements SearchService {
 		if (searchRequestModel == null || StringUtils.isEmpty(searchRequestModel.getTerm())) {
 			errors.add(new ApiError("Invalid search request."));
 			apiResponse.setResponse(HttpStatus.BAD_REQUEST, null, null, errors, request);
-			logger.warn(RESPONSE_SEARCH_DATA + HttpStatus.BAD_REQUEST.toString());
+			logger.warn(RESPONSE_SEARCH_DATA, HttpStatus.BAD_REQUEST);
 			return apiResponse;
 		}
 
@@ -68,11 +68,11 @@ public class SearchServiceImpl implements SearchService {
 				this.getRelatedInformation(searchResponse);
 
 				apiResponse.setResponse(HttpStatus.OK, searchResponse, null, null, request);
-				logger.info(RESPONSE_SEARCH_DATA + HttpStatus.OK.toString());
+				logger.info(RESPONSE_SEARCH_DATA, HttpStatus.OK);
 				return apiResponse;
 			} else {
 				apiResponse.setResponse(HttpStatus.NO_CONTENT, searchResponse, null, null, request);
-				logger.info(RESPONSE_SEARCH_DATA + HttpStatus.NO_CONTENT.toString());
+				logger.info(RESPONSE_SEARCH_DATA, HttpStatus.NO_CONTENT);
 				return apiResponse;
 			}
 
@@ -101,7 +101,7 @@ public class SearchServiceImpl implements SearchService {
 			List<RelatedItemModel> relatedItems;
 			try {
 				relatedItems = relatedDao.getRelatedItems(dataAsset.getDhId());
-				if (relatedItems == null) {
+				if (relatedItems.isEmpty()){
 					continue;
 				}
 				dataAsset.setRelated(relatedItems);
