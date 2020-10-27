@@ -68,8 +68,8 @@ public class SearchServiceTest {
 
 		assertTrue(apiResponse != null);
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getResult() == null);
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
 	}
 
 	@Test
@@ -82,8 +82,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
+		assertFalse(apiResponse.getErrors().isEmpty());
 	}
 
 	@Test
@@ -96,8 +96,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getResult() == null);
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
 	}
 
 	@Test
@@ -114,10 +114,10 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() != null);
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getResult().getResult() == null);
+		assertNotNull(apiResponse.getResult());
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getResult().getResult());
 	}
 
 	@Test
@@ -134,9 +134,9 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getResult() != null);
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
+		assertNotNull(apiResponse.getResult());
 		assertTrue(apiResponse.getResult().getResult().isEmpty());
 	}
 
@@ -155,11 +155,11 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() != null);
-		assertTrue(apiResponse.getResult().getResult() != null);
-		assertTrue(!apiResponse.getResult().getResult().isEmpty());
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getErrors() == null);
+		assertNotNull(apiResponse.getResult());
+		assertNotNull(apiResponse.getResult().getResult());
+		assertFalse(apiResponse.getResult().getResult().isEmpty());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getErrors());
 	}
 
 
@@ -183,8 +183,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult().getResult() != null);
-		assertTrue(!apiResponse.getResult().getResult().isEmpty());
+		assertNotNull(apiResponse.getResult().getResult());
+		assertFalse(apiResponse.getResult().getResult().isEmpty());
 	}
 
 	@Test
@@ -201,8 +201,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult().getResult() != null);
-		assertTrue(!apiResponse.getResult().getResult().isEmpty());
+		assertNotNull(apiResponse.getResult().getResult());
+		assertFalse(apiResponse.getResult().getResult().isEmpty());
 	}
 
 	@Test
@@ -217,8 +217,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
+		assertFalse(apiResponse.getErrors().isEmpty());
 	}
 
 	@Test
@@ -234,8 +234,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getResult() == null);
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
 	}
 
 }
