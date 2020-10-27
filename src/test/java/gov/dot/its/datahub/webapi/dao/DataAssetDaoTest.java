@@ -2,6 +2,7 @@ package gov.dot.its.datahub.webapi.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -115,6 +116,6 @@ public class DataAssetDaoTest {
 		SearchResponseModel<List<DataAsset>> response = dataAssetDao.searchDataAssetsByWords(searchRequestModel);
 		assertNotNull(response);
 		assertNotNull(response.getResult());
-		assertFalse(response.getResult().size()==0);
+		assertNotEquals(0, response.getResult().size());
 	}
 }
