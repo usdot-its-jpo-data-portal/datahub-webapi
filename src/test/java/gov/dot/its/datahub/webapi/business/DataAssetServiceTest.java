@@ -63,8 +63,8 @@ public class DataAssetServiceTest {
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
 
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
+		assertFalse(apiResponse.getErrors().isEmpty());
 
 	}
 
@@ -81,9 +81,9 @@ public class DataAssetServiceTest {
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getErrors() == null);
+		assertNull(apiResponse.getResult());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getErrors());
 
 	}
 
@@ -102,9 +102,9 @@ public class DataAssetServiceTest {
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() != null);
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
+		assertNotNull(apiResponse.getResult());
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
 		assertTrue(!apiResponse.getResult().isEmpty());
 		assertEquals(dataAssets.get(0).getName(), apiResponse.getResult().get(0).getName());
 		assertEquals(dataAssets.get(0).getId(), apiResponse.getResult().get(0).getId());
@@ -127,9 +127,9 @@ public class DataAssetServiceTest {
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
+		assertNull(apiResponse.getResult());
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
 	}
 
 	@Test
@@ -147,9 +147,9 @@ public class DataAssetServiceTest {
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
+		assertNull(apiResponse.getResult());
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
 	}
 
 	@Test
@@ -165,9 +165,9 @@ public class DataAssetServiceTest {
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getMessages() == null);
+		assertNull(apiResponse.getResult());
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getMessages());
 	}
 
 	@Test
@@ -181,9 +181,9 @@ public class DataAssetServiceTest {
 		ApiResponse<DataAsset> apiResponse = dataAssetService.findById(request, TEST_ID);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() != null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getErrors() == null);
+		assertNotNull(apiResponse.getResult());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getErrors());
 		assertEquals(dataAsset.getId(), apiResponse.getResult().getId());
 		assertEquals(dataAsset.getName(), apiResponse.getResult().getName());
 		assertEquals(dataAsset.getDescription(), apiResponse.getResult().getDescription());
@@ -198,9 +198,9 @@ public class DataAssetServiceTest {
 		ApiResponse<DataAsset> apiResponse = dataAssetService.findById(request, TEST_ID);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getErrors() == null);
+		assertNull(apiResponse.getResult());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getErrors());
 	}
 
 	@Test
@@ -212,9 +212,9 @@ public class DataAssetServiceTest {
 		ApiResponse<DataAsset> apiResponse = dataAssetService.findById(request, TEST_ID);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
+		assertNull(apiResponse.getMessages());
+		assertFalse(apiResponse.getErrors().isEmpty());
 	}
 
 }
