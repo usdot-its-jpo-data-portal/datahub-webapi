@@ -2,6 +2,7 @@ package gov.dot.its.datahub.webapi.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -69,7 +70,7 @@ public class ConfigurationServiceTest {
 		ApiResponse<List<DHEngagementPopup>> apiResponse = configurationService.engagementPopups(request);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
+		assertNull(apiResponse.getResult());
 	}
 
 	@Test
@@ -82,7 +83,7 @@ public class ConfigurationServiceTest {
 		ApiResponse<List<DHEngagementPopup>> apiResponse = configurationService.engagementPopups(request);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
+		assertNull(apiResponse.getResult());
 		assertTrue(!apiResponse.getErrors().isEmpty());
 	}
 }

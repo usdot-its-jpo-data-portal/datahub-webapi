@@ -2,6 +2,7 @@ package gov.dot.its.datahub.webapi.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -99,8 +100,8 @@ public class ConfigurationControllerTest {
 
 		assertEquals(HttpStatus.OK.value(), responseApi.getCode());
 		assertTrue(!responseApi.getResult().isEmpty());
-		assertTrue(responseApi.getErrors() == null);
-		assertTrue(responseApi.getMessages() == null);
+		assertNull(responseApi.getErrors());
+		assertNull(responseApi.getMessages());
 
 	}
 
@@ -133,8 +134,8 @@ public class ConfigurationControllerTest {
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), responseApi.getCode());
 		assertTrue(responseApi.getResult().isEmpty());
-		assertTrue(responseApi.getErrors() == null);
-		assertTrue(responseApi.getMessages() == null);
+		assertNull(responseApi.getErrors());
+		assertNull(responseApi.getMessages());
 
 	}
 
@@ -166,9 +167,9 @@ public class ConfigurationControllerTest {
 		ApiResponse<List<DHEngagementPopup>> responseApi = objectMapper.readValue(objStr, valueType);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseApi.getCode());
-		assertTrue(responseApi.getResult() == null);
-		assertTrue(responseApi.getErrors() == null);
-		assertTrue(responseApi.getMessages() == null);
+		assertNull(responseApi.getResult());
+		assertNull(responseApi.getErrors());
+		assertNull(responseApi.getMessages());
 
 	}
 
