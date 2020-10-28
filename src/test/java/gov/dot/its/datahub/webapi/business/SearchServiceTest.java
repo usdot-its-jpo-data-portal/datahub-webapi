@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +20,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import gov.dot.its.datahub.webapi.MockDataRelated;
+import gov.dot.its.datahub.webapi.MockDataSearch;
 import gov.dot.its.datahub.webapi.dao.DataAssetDao;
 import gov.dot.its.datahub.webapi.dao.RelatedDao;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
+import gov.dot.its.datahub.webapi.model.RelatedItemModel;
 import gov.dot.its.datahub.webapi.model.SearchRequestModel;
 import gov.dot.its.datahub.webapi.model.SearchResponseModel;
 
@@ -34,6 +36,9 @@ public class SearchServiceTest {
 
 	private static final int TEST_LIMIT = 10;
 	private static final String TEST_TERM = "Data";
+
+	private MockDataSearch mockData;
+	private MockDataRelated mockDataRelated;
 
 	@InjectMocks
 	private SearchServiceImpl searchService;
@@ -49,6 +54,11 @@ public class SearchServiceTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
+	public SearchServiceTest() {
+		this.mockData = new MockDataSearch();
+		this.mockDataRelated = new MockDataRelated();
+	}
+
 	@Test
 	public void testSearchDataAssetsSearchRequestModelNull() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -58,8 +68,8 @@ public class SearchServiceTest {
 
 		assertTrue(apiResponse != null);
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getResult() == null);
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
 	}
 
 	@Test
@@ -67,13 +77,13 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(null, false, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(null, false, TEST_LIMIT);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
+		assertFalse(apiResponse.getErrors().isEmpty());
 	}
 
 	@Test
@@ -81,13 +91,13 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel("", false, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel("", false, TEST_LIMIT);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getResult() == null);
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
 	}
 
 	@Test
@@ -95,19 +105,19 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(TEST_TERM, true, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, true, TEST_LIMIT);
 
-		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModelNull(searchRequestModel);
+		SearchResponseModel<List<DataAsset>> searchResponseModel = this.mockData.getFakeSearchResponseModelNull(searchRequestModel);
 
 		when(dataAssetDao.searchDataAssetsByPhrase(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() != null);
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getResult().getResult() == null);
+		assertNotNull(apiResponse.getResult());
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getResult().getResult());
 	}
 
 	@Test
@@ -115,18 +125,18 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(TEST_TERM, true, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, true, TEST_LIMIT);
 
-		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModelEmpty(searchRequestModel);
+		SearchResponseModel<List<DataAsset>> searchResponseModel = this.mockData.getFakeSearchResponseModelEmpty(searchRequestModel);
 
 		when(dataAssetDao.searchDataAssetsByPhrase(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getErrors() == null);
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getResult() != null);
+		assertNull(apiResponse.getErrors());
+		assertNull(apiResponse.getMessages());
+		assertNotNull(apiResponse.getResult());
 		assertTrue(apiResponse.getResult().getResult().isEmpty());
 	}
 
@@ -135,21 +145,21 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(TEST_TERM, true, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, true, TEST_LIMIT);
 
-		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModel(searchRequestModel);
+		SearchResponseModel<List<DataAsset>> searchResponseModel = this.mockData.getFakeSearchResponseModel(searchRequestModel);
 
 		when(dataAssetDao.searchDataAssetsByPhrase(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
-		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(null);
+		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(new ArrayList<>());
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() != null);
-		assertTrue(apiResponse.getResult().getResult() != null);
-		assertTrue(!apiResponse.getResult().getResult().isEmpty());
-		assertTrue(apiResponse.getMessages() == null);
-		assertTrue(apiResponse.getErrors() == null);
+		assertNotNull(apiResponse.getResult());
+		assertNotNull(apiResponse.getResult().getResult());
+		assertFalse(apiResponse.getResult().getResult().isEmpty());
+		assertNull(apiResponse.getMessages());
+		assertNull(apiResponse.getErrors());
 	}
 
 
@@ -158,18 +168,41 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
 
-		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModel(searchRequestModel);
+		SearchResponseModel<List<DataAsset>> searchResponseModel = this.mockData.getFakeSearchResponseModel(searchRequestModel);
+		List<RelatedItemModel> relatedItemModels = new ArrayList<>();
+		for(int i=1; i<2; i++) {
+			RelatedItemModel relatedItemModel = mockDataRelated.getFakeRelatedItemModel(String.valueOf(i));
+			relatedItemModels.add(relatedItemModel);
+		}
 
 		when(dataAssetDao.searchDataAssetsByWords(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
-		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(null);
+		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(relatedItemModels);
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult().getResult() != null);
-		assertTrue(!apiResponse.getResult().getResult().isEmpty());
+		assertNotNull(apiResponse.getResult().getResult());
+		assertFalse(apiResponse.getResult().getResult().isEmpty());
+	}
+
+	@Test
+	public void testSearchDataAssetsSearchRequestNoPhraseNoRelated() throws IOException {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setMethod("POST");
+
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
+
+		SearchResponseModel<List<DataAsset>> searchResponseModel = this.mockData.getFakeSearchResponseModel(searchRequestModel);
+		when(dataAssetDao.searchDataAssetsByWords(any(SearchRequestModel.class))).thenReturn(searchResponseModel);
+		when(relatedDao.getRelatedItems(any(String.class))).thenReturn(new ArrayList<>());
+
+		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
+
+		assertEquals(HttpStatus.OK.value(), apiResponse.getCode());
+		assertNotNull(apiResponse.getResult().getResult());
+		assertFalse(apiResponse.getResult().getResult().isEmpty());
 	}
 
 	@Test
@@ -177,15 +210,15 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
 
 		when(dataAssetDao.searchDataAssetsByWords(any(SearchRequestModel.class))).thenThrow(new IOException("Test IOException"));
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(apiResponse.getResult() == null);
-		assertTrue(!apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
+		assertFalse(apiResponse.getErrors().isEmpty());
 	}
 
 	@Test
@@ -193,7 +226,7 @@ public class SearchServiceTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
+		SearchRequestModel searchRequestModel = this.mockData.getFakeRequestModel(TEST_TERM, false, TEST_LIMIT);
 
 		ElasticsearchStatusException esException = new ElasticsearchStatusException("Test ESException", RestStatus.FORBIDDEN, "");
 		when(dataAssetDao.searchDataAssetsByWords(any(SearchRequestModel.class))).thenThrow(esException);
@@ -201,53 +234,8 @@ public class SearchServiceTest {
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, searchRequestModel);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), apiResponse.getCode());
-		assertTrue(!apiResponse.getErrors().isEmpty());
-		assertTrue(apiResponse.getResult() == null);
+		assertFalse(apiResponse.getErrors().isEmpty());
+		assertNull(apiResponse.getResult());
 	}
 
-	private SearchResponseModel<List<DataAsset>> getFakeSearchResponseModel(SearchRequestModel searchRequestModel) {
-		DataAsset dataAsset = new DataAsset();
-		dataAsset.setName("Test");
-		dataAsset.setDescription("This is the description");
-		dataAsset.setAccessLevel("Public");
-		dataAsset.setDhLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setDhSourceName("dh");
-		dataAsset.setDhId("dh-Test:1234");
-		dataAsset.setEsScore(1.3F);
-		dataAsset.setId("Test:1234");
-
-		List<DataAsset> dataAssets = new ArrayList<>();
-		dataAssets.add(dataAsset);
-
-		SearchResponseModel<List<DataAsset>> searchResponseModel = new SearchResponseModel<>();
-		searchResponseModel.setMaxScore(3.5F);
-		searchResponseModel.setNumHits(1);
-		searchResponseModel.setResult(dataAssets);
-		searchResponseModel.setSearchRequest(searchRequestModel);
-
-		return searchResponseModel;
-	}
-
-	private SearchRequestModel getFakeRequestModel(String term, boolean phrase, int limit) {
-		SearchRequestModel searchRequestModel = new SearchRequestModel();
-		searchRequestModel.setLimit(limit);
-		searchRequestModel.setPhrase(phrase);
-		searchRequestModel.setTerm(term);
-
-		return searchRequestModel;
-	}
-
-
-	private SearchResponseModel<List<DataAsset>> getFakeSearchResponseModelNull(SearchRequestModel searchRequestModel) {
-		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModel(searchRequestModel);
-		searchResponseModel.setResult(null);
-		return searchResponseModel;
-	}
-
-	private SearchResponseModel<List<DataAsset>> getFakeSearchResponseModelEmpty(SearchRequestModel searchRequestModel) {
-		SearchResponseModel<List<DataAsset>> searchResponseModel = this.getFakeSearchResponseModel(searchRequestModel);
-		searchResponseModel.setResult(new ArrayList<>());
-		return searchResponseModel;
-	}
 }

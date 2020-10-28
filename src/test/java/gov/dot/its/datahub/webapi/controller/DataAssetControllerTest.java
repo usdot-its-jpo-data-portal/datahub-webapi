@@ -2,14 +2,17 @@ package gov.dot.its.datahub.webapi.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,21 +36,24 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.dot.its.datahub.webapi.MockDataDataAsset;
 import gov.dot.its.datahub.webapi.business.DataAssetService;
 import gov.dot.its.datahub.webapi.model.ApiError;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
-import gov.dot.its.datahub.webapi.model.Metrics;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(DataAssetController.class)
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets", uriHost="example.com", uriPort=3006, uriScheme="http")
 public class DataAssetControllerTest {
 
+	private static final String TEST_ID = "Test:1234";
 	private static final String TEST_DATAASSETS_URL = "%s/v1/dataassets";
 	private static final String SERVER_SERVLET_CONTEXT_PATH = "server.servlet.context-path";
 	private static final String HEADER_HOST = "Host";
 	private static final String HEADER_CONTENT_LENGTH = "Content-Length";
+
+	private MockDataDataAsset mockData;
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -61,12 +67,16 @@ public class DataAssetControllerTest {
 	@MockBean
 	private DataAssetService dataAssetService;
 
+	public DataAssetControllerTest() {
+		this.mockData = new MockDataDataAsset();
+	}
+
 	@Test
 	public void testDatasetsData() throws Exception { //NOSONAR
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("GET");
 
-		DataAsset dataAsset = this.getFakeDataAsset();
+		DataAsset dataAsset = this.mockData.getFakeDataAsset(TEST_ID);
 		List<DataAsset> dataAssets = new ArrayList<>();
 		dataAssets.add(dataAsset);
 
@@ -99,10 +109,10 @@ public class DataAssetControllerTest {
 		ApiResponse<List<DataAsset>> responseApi = objectMapper.readValue(objString, valueType);
 
 		assertEquals(HttpStatus.OK.value(), responseApi.getCode());
-		assertTrue(responseApi.getErrors() == null);
-		assertTrue(responseApi.getMessages() == null);
-		assertTrue(responseApi.getResult() != null);
-		assertTrue(!responseApi.getResult().isEmpty());
+		assertNull(responseApi.getErrors());
+		assertNull(responseApi.getMessages());
+		assertNotNull(responseApi.getResult());
+		assertFalse(responseApi.getResult().isEmpty());
 		DataAsset respDataAsset = responseApi.getResult().get(0);
 		assertEquals(dataAsset.getAccessLevel(), respDataAsset.getAccessLevel());
 		assertEquals(dataAsset.getDescription(), respDataAsset.getDescription());
@@ -152,9 +162,9 @@ public class DataAssetControllerTest {
 		ApiResponse<List<DataAsset>> responseApi = objectMapper.readValue(objString, valueType);
 
 		assertEquals(HttpStatus.NO_CONTENT.value(), responseApi.getCode());
-		assertTrue(responseApi.getErrors() == null);
-		assertTrue(responseApi.getMessages() == null);
-		assertTrue(responseApi.getResult() == null);
+		assertNull(responseApi.getErrors());
+		assertNull(responseApi.getMessages());
+		assertNull(responseApi.getResult());
 
 	}
 
@@ -195,10 +205,10 @@ public class DataAssetControllerTest {
 		ApiResponse<List<DataAsset>> responseApi = objectMapper.readValue(objString, valueType);
 
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), responseApi.getCode());
-		assertTrue(responseApi.getErrors() != null);
-		assertTrue(!responseApi.getErrors().isEmpty());
-		assertTrue(responseApi.getMessages() == null);
-		assertTrue(responseApi.getResult() == null);
+		assertNotNull(responseApi.getErrors());
+		assertFalse(responseApi.getErrors().isEmpty());
+		assertNull(responseApi.getMessages());
+		assertNull(responseApi.getResult());
 
 	}
 
@@ -207,7 +217,7 @@ public class DataAssetControllerTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("GET");
 
-		DataAsset dataAsset = this.getFakeDataAsset();
+		DataAsset dataAsset = this.mockData.getFakeDataAsset(TEST_ID);
 		List<DataAsset> dataAssets = new ArrayList<>();
 		dataAssets.add(dataAsset);
 
@@ -240,39 +250,52 @@ public class DataAssetControllerTest {
 		ApiResponse<List<DataAsset>> responseApi = objectMapper.readValue(objString, valueType);
 
 		assertEquals(HttpStatus.OK.value(), responseApi.getCode());
-		assertTrue(responseApi.getMessages() == null);
-		assertTrue(responseApi.getErrors() == null);
-		assertTrue(responseApi.getResult() != null);
-		assertTrue(!responseApi.getResult().isEmpty());
+		assertNull(responseApi.getMessages());
+		assertNull(responseApi.getErrors());
+		assertFalse(responseApi.getResult().isEmpty());
 
 	}
 
-	private DataAsset getFakeDataAsset() {
-		List<String> tags = new ArrayList<>();
-		tags.add("Definitions");
-		tags.add("Human factors");
-		tags.add("Information dissemination");
+	@Test
+	public void testDataset() throws Exception { //NOSONAR
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setMethod("GET");
 
-		Metrics metrics = new Metrics();
-		metrics.setDownloadsTotal(5L);
-		metrics.setPageViewsLastMonth(15L);
-		metrics.setPageViewsTotal(25L);
+		DataAsset dataAsset = this.mockData.getFakeDataAsset(TEST_ID);
 
-		DataAsset dataAsset = new DataAsset();
-		dataAsset.setId("test:1234");
-		dataAsset.setName("Different Approaches to Disseminating Traveler Information");
-		dataAsset.setDescription("Source: Provided by ITS DataHub through the National Transportation Library.");
-		dataAsset.setAccessLevel("Public");
-		dataAsset.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setTags(tags);
-		dataAsset.setSourceUrl("https://source.example.com/view/test/1234");
-		dataAsset.setDhId("s1-test:1234");
-		dataAsset.setDhLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setDhSourceName("s1");
-		dataAsset.setMetrics(metrics);
-		dataAsset.setDhType("[Dataset or Document]");
+		ApiResponse<DataAsset> apiResponse = new ApiResponse<>();
+		apiResponse.setResponse(HttpStatus.OK, dataAsset, null, null, request);
 
-		return dataAsset;
+		when(dataAssetService.findById(any(HttpServletRequest.class), anyString())).thenReturn(apiResponse);
+
+		ResultActions resultActions = this.mockMvc.perform(
+				get(String.format(TEST_DATAASSETS_URL+"/id", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
+				.contextPath(String.format("%s", env.getProperty(SERVER_SERVLET_CONTEXT_PATH)))
+				)
+				.andExpect(status().isOk())
+				.andDo(document("api/v1/dataassets/id",
+						Preprocessors.preprocessRequest(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								),
+						Preprocessors.preprocessResponse(
+								Preprocessors.prettyPrint(),
+								Preprocessors.removeHeaders(HEADER_HOST, HEADER_CONTENT_LENGTH)
+								)
+
+						));
+
+		MvcResult result = resultActions.andReturn();
+		String objString = result.getResponse().getContentAsString();
+
+		TypeReference<ApiResponse<DataAsset>> valueType = new TypeReference<ApiResponse<DataAsset>>(){};
+		ApiResponse<DataAsset> responseApi = objectMapper.readValue(objString, valueType);
+
+		assertEquals(HttpStatus.OK.value(), responseApi.getCode());
+		assertNull(responseApi.getMessages());
+		assertNull(responseApi.getErrors());
+		assertNotNull(responseApi.getResult());
+
 	}
 
 }

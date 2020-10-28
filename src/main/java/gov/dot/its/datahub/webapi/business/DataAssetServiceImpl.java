@@ -36,7 +36,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 	@Override
 	public ApiResponse<List<DataAsset>> findAll(HttpServletRequest request, Map<String, String> params) {
 		logger.info("Request: Find all.");
-		final String RESPONSE_FIND_ALL = "Response: Find all, ";
+		final String RESPONSE_FIND_ALL = "Response: Find all, {}";
 
 		ApiResponse<List<DataAsset>> apiResponse = new ApiResponse<>();
 		List<ApiError> errors = new ArrayList<>();
@@ -48,7 +48,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 		if (sortBy != null && !StringUtils.isEmpty(sortBy) && !orderByFieldIsValid(sortBy)) {
 			errors.add(new ApiError(String.format("Invalid sortBy field [%s].", sortBy)));
 			apiResponse.setResponse(HttpStatus.BAD_REQUEST, null, null, errors, request);
-			logger.warn(RESPONSE_FIND_ALL+HttpStatus.BAD_REQUEST.toString());
+			logger.warn(RESPONSE_FIND_ALL, HttpStatus.BAD_REQUEST);
 			return apiResponse;
 		}
 
@@ -58,11 +58,11 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 			if (data != null && !data.isEmpty()) {
 				apiResponse.setResponse(HttpStatus.OK, data, null, null, request);
-				logger.info(RESPONSE_FIND_ALL+HttpStatus.OK.toString());
+				logger.info(RESPONSE_FIND_ALL, HttpStatus.OK);
 				return apiResponse;
 			} else {
 				apiResponse.setResponse(HttpStatus.NO_CONTENT, null, null, null, request);
-				logger.info(RESPONSE_FIND_ALL+HttpStatus.NO_CONTENT.toString());
+				logger.info(RESPONSE_FIND_ALL, HttpStatus.NO_CONTENT);
 				return apiResponse;
 			}
 
@@ -85,6 +85,7 @@ public class DataAssetServiceImpl implements DataAssetService {
 	@Override
 	public ApiResponse<DataAsset> findById(HttpServletRequest request, String id) {
 		logger.info("Request: Find by id.");
+		final String RESPONSE_BY_ID = "Response: Find by id, {}";
 		ApiResponse<DataAsset> apiResponse = new ApiResponse<>();
 
 		try {
@@ -93,11 +94,11 @@ public class DataAssetServiceImpl implements DataAssetService {
 
 			if (data != null) {
 				apiResponse.setResponse(HttpStatus.OK, data, null, null, request);
-				logger.info(String.format("Response: Find by id, %s", HttpStatus.OK.toString()));
+				logger.info(RESPONSE_BY_ID, HttpStatus.OK);
 				return apiResponse;
 			} else {
 				apiResponse.setResponse(HttpStatus.NO_CONTENT, null, null, null, request);
-				logger.info(String.format("Response: Find by id, %s", HttpStatus.NO_CONTENT.toString()));
+				logger.info(RESPONSE_BY_ID, HttpStatus.NO_CONTENT);
 				return apiResponse;
 			}
 

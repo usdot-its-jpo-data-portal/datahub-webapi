@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -28,16 +28,13 @@ public class ConfigurationDaoImpl implements ConfigurationDao {
 	@Value("${datahub.webapi.configurations.default}")
 	private String configurationId;
 
-	private RestHighLevelClient restHighLevelClient;
-
-	public ConfigurationDaoImpl(RestHighLevelClient restHighLevelClient) {
-		this.restHighLevelClient = restHighLevelClient;
-	}
+	@Autowired
+	private ESClientDao esClientDao;
 
 	@Override
 	public List<DHEngagementPopup> getEngagementPopups() throws IOException {
-		GetRequest getRequest = new GetRequest(configurationIndex, "_doc", configurationId);
-		GetResponse getResponse = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+		GetRequest getRequest = new GetRequest(configurationIndex, configurationId);
+		GetResponse getResponse = esClientDao.get(getRequest, RequestOptions.DEFAULT);
 
 		if (!getResponse.isExists()) {
 			return new ArrayList<>();

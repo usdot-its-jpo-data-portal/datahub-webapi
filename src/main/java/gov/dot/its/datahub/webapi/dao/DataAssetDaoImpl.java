@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.ScriptType;
@@ -23,6 +21,7 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.elasticsearch.search.sort.ScoreSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -43,14 +42,11 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	private static final int FRAGMENT_SIZE = 5000;
 	private static final int NUMBER_OF_FRAGMENTS = 5;
 
-	private RestHighLevelClient restHighLevelClient;
-
-	public DataAssetDaoImpl(RestHighLevelClient restHighLevelClient) {
-		this.restHighLevelClient = restHighLevelClient;
-	}
+	@Autowired
+	private ESClientDao esClientDao;
 
 	@Override
-	public List<DataAsset> getDataAssets(String sortBy, String sortDirection, Integer limit) throws IOException, ElasticsearchStatusException {
+	public List<DataAsset> getDataAssets(String sortBy, String sortDirection, Integer limit) throws IOException {
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
@@ -67,7 +63,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 
 		SearchResponse searchResponse = null;
 
-		searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+		searchResponse = esClientDao.search(searchRequest, RequestOptions.DEFAULT);
 		SearchHits hits = searchResponse.getHits();
 
 		SearchHit[] searchHits = hits.getHits();
@@ -96,7 +92,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 
 		SearchResponse searchResponse = null;
 
-		searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+		searchResponse = esClientDao.search(searchRequest, RequestOptions.DEFAULT);
 		SearchHits hits = searchResponse.getHits();
 
 		SearchHit[] searchHits = hits.getHits();
@@ -154,7 +150,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 
 		SearchResponse searchResponse = null;
 
-		searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+		searchResponse = esClientDao.search(searchRequest, RequestOptions.DEFAULT);
 		SearchHits hits = searchResponse.getHits();
 
 		return this.getSearchResponseData(hits);
@@ -202,7 +198,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		scriptParams.put("highliterType", HIGHLIGHTER_TYPE);
 		searchTemplateRequest.setScriptParams(scriptParams);
 
-		SearchTemplateResponse searchTemplateResponse = restHighLevelClient.searchTemplate(searchTemplateRequest, RequestOptions.DEFAULT);
+		SearchTemplateResponse searchTemplateResponse = esClientDao.searchTemplate(searchTemplateRequest, RequestOptions.DEFAULT);
 
 		SearchHits hits = searchTemplateResponse.getResponse().getHits();
 

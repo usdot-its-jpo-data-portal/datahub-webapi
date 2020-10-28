@@ -8,9 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +23,7 @@ public class DataAssetController {
 	@Autowired
 	private DataAssetService dataAssetService;
 
-	@RequestMapping(value="/v1/dataassets", method=RequestMethod.GET, headers = "Accept=application/json")
+	@GetMapping(value="/v1/dataassets", headers = "Accept=application/json")
 	public ResponseEntity<ApiResponse<List<DataAsset>>> datasets(HttpServletRequest request, @RequestParam Map<String, String> params) { 
 
 		ApiResponse<List<DataAsset>> apiResponse = dataAssetService.findAll(request, params);
@@ -32,7 +31,7 @@ public class DataAssetController {
 		return new ResponseEntity<>(apiResponse,HttpStatus.OK);
 	}
 
-	@RequestMapping(value="/v1/dataassets/{id}", method=RequestMethod.GET, headers = "Accept=application/json")
+	@GetMapping(value="/v1/dataassets/{id}", headers = "Accept=application/json")
 	public ResponseEntity<ApiResponse<DataAsset>> dataset(HttpServletRequest request, @PathVariable String id) {
 
 		 ApiResponse<DataAsset> apiResponse = dataAssetService.findById(request, id);
