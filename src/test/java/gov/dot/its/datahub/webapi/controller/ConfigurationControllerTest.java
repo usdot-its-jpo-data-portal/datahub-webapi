@@ -9,9 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import gov.dot.its.datahub.webapi.MockDataConfiguration;
 import gov.dot.its.datahub.webapi.business.ConfigurationService;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DHEngagementPopup;
@@ -46,6 +45,8 @@ public class ConfigurationControllerTest {
 	private static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	private static final String SERVER_SERVLET_CONTEXT_PATH = "server.servlet.context-path";
 
+	private MockDataConfiguration mockData;
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -58,6 +59,10 @@ public class ConfigurationControllerTest {
 	@MockBean
 	private ConfigurationService configurationService;
 
+	public ConfigurationControllerTest() {
+		this.mockData = new MockDataConfiguration();
+	}
+
 	@Test
 	public void testEngagementPopupsData() throws Exception { //NOSONAR
 		MockHttpServletRequest request = new MockHttpServletRequest();
@@ -66,7 +71,7 @@ public class ConfigurationControllerTest {
 		List<DHEngagementPopup> engagementPopups = new ArrayList<>();
 
 		for (int i=0 ; i<2; i++) {
-			DHEngagementPopup engagementPopup = this.getFakeEngagementPopup(i);
+			DHEngagementPopup engagementPopup = this.mockData.getFakeEngagementPopup(i);
 			engagementPopups.add(engagementPopup);
 		}
 
@@ -167,17 +172,4 @@ public class ConfigurationControllerTest {
 
 	}
 
-	private DHEngagementPopup getFakeEngagementPopup(int index) {
-		DHEngagementPopup engagementPopup = new DHEngagementPopup();
-		engagementPopup.setActive(true);
-		engagementPopup.setContent(String.format("<h1>Content-%s</h1>", index));
-		engagementPopup.setControlsColor("white");
-		engagementPopup.setControlsShadow("black");
-		engagementPopup.setDescription(String.format("Description-%s", index));
-		engagementPopup.setId(UUID.randomUUID().toString());
-		engagementPopup.setLastModified(new Date());
-		engagementPopup.setName(String.format("Engagement Popup %s", index));
-
-		return engagementPopup;
-	}
 }

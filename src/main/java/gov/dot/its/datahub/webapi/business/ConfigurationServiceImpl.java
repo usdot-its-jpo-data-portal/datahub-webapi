@@ -33,7 +33,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	@Override
 	public ApiResponse<List<DHEngagementPopup>> engagementPopups(HttpServletRequest request) {
 		logger.info("Request: Engagement Popups.");
-		final String RESPONSE_MSG = "Response: GET Engagement Popups. ";
+		final String RESPONSE_MSG = "Response: GET Engagement Popups. {}";
 
 		ApiResponse<List<DHEngagementPopup>> apiResponse = new ApiResponse<>();
 		List<ApiError> errors = new ArrayList<>();
@@ -43,12 +43,12 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 			if (engagementPopups != null && !engagementPopups.isEmpty()) {
 				apiResponse.setResponse(HttpStatus.OK, engagementPopups, null, null, request);
-				logger.info(RESPONSE_MSG+HttpStatus.OK.toString());
+				logger.info(RESPONSE_MSG, HttpStatus.OK);
 				return apiResponse;
 			}
 
 			apiResponse.setResponse(HttpStatus.NO_CONTENT, null, null, null, request);
-			logger.info(RESPONSE_MSG+HttpStatus.NO_CONTENT.toString());
+			logger.info(RESPONSE_MSG, HttpStatus.NO_CONTENT);
 			return apiResponse;
 		} catch(ElasticsearchException | IOException e) {
 			errors.add(new ApiError(e.getMessage()));

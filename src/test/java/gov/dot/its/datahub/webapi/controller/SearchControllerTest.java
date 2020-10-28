@@ -7,8 +7,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,11 +30,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.dot.its.datahub.webapi.MockDataSearch;
 import gov.dot.its.datahub.webapi.business.SearchService;
 import gov.dot.its.datahub.webapi.model.ApiResponse;
 import gov.dot.its.datahub.webapi.model.DataAsset;
-import gov.dot.its.datahub.webapi.model.Metrics;
-import gov.dot.its.datahub.webapi.model.RelatedItemModel;
 import gov.dot.its.datahub.webapi.model.SearchRequestModel;
 import gov.dot.its.datahub.webapi.model.SearchResponseModel;
 
@@ -50,6 +47,8 @@ public class SearchControllerTest {
 	private static final String TEST_DATAASSETS_URL = "%s/v1/search";
 	private static final String SERVER_SERVLET_CONTEXT_PATH = "server.servlet.context-path";
 
+	private MockDataSearch mockData;
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -62,14 +61,18 @@ public class SearchControllerTest {
 	@MockBean
 	private SearchService searchService;
 
+	public SearchControllerTest() {
+		this.mockData = new MockDataSearch();
+	}
+
 	@Test
 	public void testSearchDataAssetsData() throws Exception { //NOSONAR
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("POST");
 
-		SearchRequestModel searchRequestModel = this.getFakeSearchRequestModel();
+		SearchRequestModel searchRequestModel = this.mockData.getFakeSearchRequestModel();
 
-		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = this.getFakeApiResponse(request, searchRequestModel);
+		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = this.mockData.getFakeApiResponse(request, searchRequestModel);
 
 		when(searchService.searchDataAssets(any(HttpServletRequest.class), any(SearchRequestModel.class))).thenReturn(apiResponse);
 
@@ -102,69 +105,4 @@ public class SearchControllerTest {
 		assertEquals(HttpStatus.OK.value(), responseApi.getCode());
 
 	}
-
-	private ApiResponse<SearchResponseModel<List<DataAsset>>> getFakeApiResponse(HttpServletRequest request, SearchRequestModel searchRequestModel) {
-		DataAsset dataAsset = new DataAsset();
-		dataAsset.setAccessLevel("Public");
-		dataAsset.setDescription("Description of the data asset");
-		dataAsset.setDhId("intId");
-		dataAsset.setDhLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setDhSourceName("source");
-		dataAsset.setEsScore(1.0F);
-		dataAsset.setId("id:1234");
-		dataAsset.setLastUpdate(new Timestamp(System.currentTimeMillis()));
-		dataAsset.setName("SampleDataAsset");
-		dataAsset.setSourceUrl("http://testing.com/id:1234");
-		List<String> tags = new ArrayList<>();
-		tags.add("Sample tag number one");
-		tags.add("Sample tag number two");
-		tags.add("Sample tag number three");
-		dataAsset.setTags(tags);
-
-		List<RelatedItemModel> relateds = new ArrayList<>();
-		RelatedItemModel relItem = new RelatedItemModel();
-		relItem.setId("585e203c4bf7b9ff12966fd9697b87cb");
-		relItem.setName("related1-name");
-		relItem.setUrl("http://related.item.com/id=585e203c4bf7b9ff12966fd9697b87cb");
-		relateds.add(relItem);
-		relItem = new RelatedItemModel();
-		relItem.setId("7f3bac27fc81d39ffa8ede58b39c8fb6");
-		relItem.setName("related2-name");
-		relItem.setUrl("http://related.item.com/id=7f3bac27fc81d39ffa8ede58b39c8fb6");
-		relateds.add(relItem);
-
-		dataAsset.setRelated(relateds);
-
-		Metrics metrics = new Metrics();
-		metrics.setDownloadsTotal(5L);
-		metrics.setPageViewsLastMonth(15L);
-		metrics.setPageViewsTotal(25L);
-
-		dataAsset.setMetrics(metrics);
-
-		List<DataAsset> dataAssets = new ArrayList<>();
-		dataAssets.add(dataAsset);
-
-		SearchResponseModel<List<DataAsset>> searchResponseModel = new SearchResponseModel<>();
-		searchResponseModel.setMaxScore(1.0F);
-		searchResponseModel.setNumHits(1);
-		searchResponseModel.setResult(dataAssets);
-		searchResponseModel.setSearchRequest(searchRequestModel);
-
-		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = new ApiResponse<>();
-		apiResponse.setResponse(HttpStatus.OK, searchResponseModel, null, null, request);
-
-		return apiResponse;
-	}
-
-
-	private SearchRequestModel getFakeSearchRequestModel() {
-		SearchRequestModel searchRequestModel = new SearchRequestModel();
-		searchRequestModel.setLimit(10);
-		searchRequestModel.setPhrase(false);
-		searchRequestModel.setTerm("Test");
-
-		return searchRequestModel;
-	}
-
 }

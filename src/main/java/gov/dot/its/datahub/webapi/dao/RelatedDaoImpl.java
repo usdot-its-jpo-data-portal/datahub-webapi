@@ -1,13 +1,14 @@
 package gov.dot.its.datahub.webapi.dao;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -29,17 +30,14 @@ public class RelatedDaoImpl implements RelatedDao {
 	@Value("${codehub.ui.url.questring}")
 	private String codeHubQueryString;
 
-	private RestHighLevelClient restHighLevelClient;
-
-	public RelatedDaoImpl(RestHighLevelClient restHighLevelClient) {
-		this.restHighLevelClient = restHighLevelClient;
-	}
+	@Autowired
+	private ESClientDao esClientDao;
 
 	@Override
 	public List<RelatedItemModel> getRelatedItems(String id) throws IOException {
 
-		GetRequest getRequest = new GetRequest(relatedIndex, "_doc", id);
-		GetResponse getResponse = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
+		GetRequest getRequest = new GetRequest(relatedIndex, id);
+		GetResponse getResponse = esClientDao.get(getRequest, RequestOptions.DEFAULT);
 
 
 		if (getResponse.isExists()) {
@@ -55,11 +53,11 @@ public class RelatedDaoImpl implements RelatedDao {
 			return relatedModel.getUrls();
 		}
 
-		return null;
+		return new ArrayList<>();
 	}
 
 	private void buildTargetUrls(RelatedModel relatedModel) {
-		if (relatedModel == null || relatedModel.getUrls() == null || relatedModel.getUrls().isEmpty()) {
+		if (relatedModel == null || relatedModel.getUrls().isEmpty()) {
 			return;
 		}
 
