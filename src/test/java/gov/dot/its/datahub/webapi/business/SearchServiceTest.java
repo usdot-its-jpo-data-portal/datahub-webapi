@@ -66,7 +66,7 @@ public class SearchServiceTest {
 
 		ApiResponse<SearchResponseModel<List<DataAsset>>> apiResponse = searchService.searchDataAssets(request, null);
 
-		assertTrue(apiResponse != null);
+		assertNotNull(apiResponse);
 		assertEquals(HttpStatus.BAD_REQUEST.value(), apiResponse.getCode());
 		assertFalse(apiResponse.getErrors().isEmpty());
 		assertNull(apiResponse.getResult());
