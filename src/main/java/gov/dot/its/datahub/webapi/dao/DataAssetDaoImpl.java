@@ -50,10 +50,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	public List<DataAsset> getDataAssets(String sortBy, String sortDirection, Integer limit) throws IOException {
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(
-			QueryBuilders.boolQuery()
-			.mustNot(QueryBuilders.termQuery("tags", MASK_TAG))
-		);
+		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 
 		searchSourceBuilder.size(limit);
 		if (!StringUtils.isEmpty(sortBy)) {
@@ -80,6 +77,9 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
 			dataAsset.setEsScore(getHitScore(hit));
+			if (dataAsset.getTags().contains(MASK_TAG)){
+				continue;
+			}
 			result.add(dataAsset);
 		}
 
@@ -110,6 +110,9 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			result = mapper.convertValue(sourceAsMap, DataAsset.class);
 			result.setEsScore(getHitScore(hit));
+			if (result.getTags().contains(MASK_TAG)){
+				result = null;
+			}
 		}
 
 		return result;
@@ -121,11 +124,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-		searchSourceBuilder.query(
-			QueryBuilders.boolQuery()
-			.must(QueryBuilders.multiMatchQuery(searchRequestModel.getTerm(), "name", "description", "tags"))
-			.mustNot(QueryBuilders.termQuery("tags", MASK_TAG))	
-		);
+		searchSourceBuilder.query(QueryBuilders.multiMatchQuery(searchRequestModel.getTerm(), "name", "description", "tags"));
 
 		searchSourceBuilder.size(searchRequestModel.getLimit());
 		searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
@@ -183,8 +182,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 				"          {\"match_phrase\": { \"name\": { \"query\": \"{{term}}\" } } },\n" +
 				"          {\"match_phrase\": { \"description\": { \"query\": \"{{term}}\" } } },\n" +
 				"          {\"match_phrase\": { \"tags\": { \"query\": \"{{term}}\"} } }\n" +
-				"        ],\n" +
-				"        \"filter\": {\"not\": {\"filter\": {\"term\": {\"tags\": \"{{maskTag}}\"}}}}"+
+				"        ]\n" +
 				"      }\n" +
 				"    },\n" +
 				"    \"highlight\" : {\n" +
@@ -202,7 +200,6 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		Map<String, Object> scriptParams = new HashMap<>();
 		scriptParams.put("term", searchRequestModel.getTerm());
 		scriptParams.put("size", searchRequestModel.getLimit());
-		scriptParams.put("maskTag", MASK_TAG);
 		scriptParams.put("fragmentSize", FRAGMENT_SIZE);
 		scriptParams.put("numFragments", NUMBER_OF_FRAGMENTS);
 		scriptParams.put("highliterType", HIGHLIGHTER_TYPE);
@@ -230,6 +227,9 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
+			if (dataAsset.getTags().contains(MASK_TAG)){
+				continue;
+			}
 			dataAsset.setEsScore(getHitScore(hit));
 			Map<String, HighlightField> highlightFields = hit.getHighlightFields();
 			for(Map.Entry<String, HighlightField> entry : highlightFields.entrySet()) {
