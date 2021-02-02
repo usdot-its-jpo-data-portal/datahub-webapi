@@ -49,7 +49,10 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	public List<DataAsset> getDataAssets(String sortBy, String sortDirection, Integer limit) throws IOException {
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+		searchSourceBuilder.query(
+			QueryBuilders.boolQuery()
+			.mustNot(QueryBuilders.termQuery("tags", "its-datahub-hide"))
+		);
 
 		searchSourceBuilder.size(limit);
 		if (!StringUtils.isEmpty(sortBy)) {
@@ -117,7 +120,11 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		SearchRequest searchRequest = new SearchRequest(index);
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-		searchSourceBuilder.query(QueryBuilders.multiMatchQuery(searchRequestModel.getTerm(), "name", "description", "tags"));
+		searchSourceBuilder.query(
+			QueryBuilders.boolQuery()
+			.must(QueryBuilders.multiMatchQuery(searchRequestModel.getTerm(), "name", "description", "tags"))
+			.mustNot(QueryBuilders.termQuery("tags", "its-datahub-hide"))	
+		);
 
 		searchSourceBuilder.size(searchRequestModel.getLimit());
 		searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
@@ -175,7 +182,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 				"          {\"match_phrase\": { \"name\": { \"query\": \"{{term}}\" } } },\n" +
 				"          {\"match_phrase\": { \"description\": { \"query\": \"{{term}}\" } } },\n" +
 				"          {\"match_phrase\": { \"tags\": { \"query\": \"{{term}}\"} } }\n" +
-				"        ]\n" +
+				"        ],\n" +
 				"        \"filter\": {\"not\": {\"filter\": {\"term\": {\"tags\": \"its-datahub-hide\"}}}}"+
 				"      }\n" +
 				"    },\n" +
