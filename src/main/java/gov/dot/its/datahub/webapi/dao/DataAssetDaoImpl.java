@@ -176,6 +176,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 				"          {\"match_phrase\": { \"description\": { \"query\": \"{{term}}\" } } },\n" +
 				"          {\"match_phrase\": { \"tags\": { \"query\": \"{{term}}\"} } }\n" +
 				"        ]\n" +
+				"        \"filter\": {\"not\": {\"filter\": {\"term\": {\"tags\": \"its-datahub-hide\"}}}}"+
 				"      }\n" +
 				"    },\n" +
 				"    \"highlight\" : {\n" +
