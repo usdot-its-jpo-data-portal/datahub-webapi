@@ -41,6 +41,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	private static final String HIGHLIGHTER_TYPE = "plain";
 	private static final int FRAGMENT_SIZE = 5000;
 	private static final int NUMBER_OF_FRAGMENTS = 5;
+	private static final String MASK_TAG = "its-datahub-hide";
 
 	@Autowired
 	private ESClientDao esClientDao;
@@ -51,7 +52,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(
 			QueryBuilders.boolQuery()
-			.mustNot(QueryBuilders.termQuery("tags", "its-datahub-hide"))
+			.mustNot(QueryBuilders.termQuery("tags", MASK_TAG))
 		);
 
 		searchSourceBuilder.size(limit);
@@ -123,7 +124,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		searchSourceBuilder.query(
 			QueryBuilders.boolQuery()
 			.must(QueryBuilders.multiMatchQuery(searchRequestModel.getTerm(), "name", "description", "tags"))
-			.mustNot(QueryBuilders.termQuery("tags", "its-datahub-hide"))	
+			.mustNot(QueryBuilders.termQuery("tags", MASK_TAG))	
 		);
 
 		searchSourceBuilder.size(searchRequestModel.getLimit());
@@ -183,7 +184,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 				"          {\"match_phrase\": { \"description\": { \"query\": \"{{term}}\" } } },\n" +
 				"          {\"match_phrase\": { \"tags\": { \"query\": \"{{term}}\"} } }\n" +
 				"        ],\n" +
-				"        \"filter\": {\"not\": {\"filter\": {\"term\": {\"tags\": \"its-datahub-hide\"}}}}"+
+				"        \"filter\": {\"not\": {\"filter\": {\"term\": {\"tags\": \"{{maskTag}}\"}}}}"+
 				"      }\n" +
 				"    },\n" +
 				"    \"highlight\" : {\n" +
@@ -201,6 +202,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		Map<String, Object> scriptParams = new HashMap<>();
 		scriptParams.put("term", searchRequestModel.getTerm());
 		scriptParams.put("size", searchRequestModel.getLimit());
+		scriptParams.put("maskTag", MASK_TAG);
 		scriptParams.put("fragmentSize", FRAGMENT_SIZE);
 		scriptParams.put("numFragments", NUMBER_OF_FRAGMENTS);
 		scriptParams.put("highliterType", HIGHLIGHTER_TYPE);
