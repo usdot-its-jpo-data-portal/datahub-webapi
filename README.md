@@ -2,7 +2,7 @@
 DataHub Web API to consume data from  DataHub ElasticSearch storage system.
 
 ## Usage
-Once the application is running on a configured port it is required to submit a GET request to retrieve a list of datasets or individual dataset or a POST request to search for **words** or **phrases**.
+Once the application is running on a configured port it is required to submit a GET request to retrieve a list of datasets or individual dataset or a POST request to search for **words** or **phrases**. Results returned will exclude data assets that have been tagged with "its-datahub-hide".
 
 The following endpoints were defined to request for data:
 
