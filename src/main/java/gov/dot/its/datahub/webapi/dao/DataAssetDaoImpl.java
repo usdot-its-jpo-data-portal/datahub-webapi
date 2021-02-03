@@ -41,6 +41,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 	private static final String HIGHLIGHTER_TYPE = "plain";
 	private static final int FRAGMENT_SIZE = 5000;
 	private static final int NUMBER_OF_FRAGMENTS = 5;
+	private static final String MASK_TAG = "its-datahub-hide";
 
 	@Autowired
 	private ESClientDao esClientDao;
@@ -76,6 +77,9 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
 			dataAsset.setEsScore(getHitScore(hit));
+			if (dataAsset.getTags().contains(MASK_TAG)){
+				continue;
+			}
 			result.add(dataAsset);
 		}
 
@@ -106,6 +110,9 @@ public class DataAssetDaoImpl implements DataAssetDao {
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			result = mapper.convertValue(sourceAsMap, DataAsset.class);
 			result.setEsScore(getHitScore(hit));
+			if (result.getTags().contains(MASK_TAG)){
+				result = null;
+			}
 		}
 
 		return result;
@@ -216,10 +223,13 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		List<DataAsset> result = new ArrayList<>();
 		for (SearchHit hit : searchHits) {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-
+			
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
+			if (dataAsset.getTags().contains(MASK_TAG)){
+				continue;
+			}
 			dataAsset.setEsScore(getHitScore(hit));
 			Map<String, HighlightField> highlightFields = hit.getHighlightFields();
 			for(Map.Entry<String, HighlightField> entry : highlightFields.entrySet()) {
