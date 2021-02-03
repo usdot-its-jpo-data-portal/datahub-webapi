@@ -218,6 +218,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		searchResponseModel.setMaxScore(hits.getMaxScore());
 
 		SearchHit[] searchHits = hits.getHits();
+		searchResponseModel.setNumHits(searchHits.length);
 
 		List<DataAsset> result = new ArrayList<>();
 		for (SearchHit hit : searchHits) {
@@ -247,7 +248,6 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		}
 
 		searchResponseModel.setResult(result);
-		searchResponseModel.setNumHits(result.size());
 
 		return searchResponseModel;
 	}
