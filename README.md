@@ -240,7 +240,7 @@ The API requires the following environment variables
 The API is a Java application and can be executed updating the values of the following command template.
 
 ```bash
-sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.6.0.jar"
+sh -c java -Djava.security.egd=file:/dev/./urandom -jar /datahub-webapi-1.7.0.jar"
 ```
 It is important to setup the environment variables before to execute the application.
 
@@ -291,6 +291,8 @@ docker run -p 3006:3006 --rm \
   * Upgrade Java version from 8 to 11.
 * 1.6.0
   * Integration with SonarCloud
+* 1.7.0
+  * Exclude data assets that have been tagged with "its-datahub-hide" in results.
 
 ## Contact information
 Joe Doe : X@Y
