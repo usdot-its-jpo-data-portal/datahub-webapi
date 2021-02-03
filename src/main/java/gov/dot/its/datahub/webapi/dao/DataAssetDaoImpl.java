@@ -218,12 +218,10 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		searchResponseModel.setMaxScore(hits.getMaxScore());
 
 		SearchHit[] searchHits = hits.getHits();
-		searchResponseModel.setNumHits(searchHits.length);
 
 		List<DataAsset> result = new ArrayList<>();
 		for (SearchHit hit : searchHits) {
 			Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			DataAsset dataAsset = mapper.convertValue(sourceAsMap, DataAsset.class);
@@ -249,6 +247,7 @@ public class DataAssetDaoImpl implements DataAssetDao {
 		}
 
 		searchResponseModel.setResult(result);
+		searchResponseModel.setNumHits(result.size());
 
 		return searchResponseModel;
 	}
