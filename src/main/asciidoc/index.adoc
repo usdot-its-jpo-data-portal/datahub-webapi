@@ -5,7 +5,7 @@
 = ITS DataHub
 
 == Web API
-`version: 1.6.0`
+`version: 1.7.0`
 
 WebApi to interface ITS DataHub https://www.elastic.co/products/enterprise-search[ElasticSearch] storage system.
 
@@ -14,9 +14,9 @@ The information is presented through an structure (DataAsset) that contains the 
 === Change Log
 Changes related to the previous version.
 
-`Previous version: 1.5.0`
+`Previous version: 1.6.0`
 
-* Integration with SonarCloud.
+* Exclude data assets that have been tagged with "its-datahub-hide" in results.
 
 === DataAsset
 
