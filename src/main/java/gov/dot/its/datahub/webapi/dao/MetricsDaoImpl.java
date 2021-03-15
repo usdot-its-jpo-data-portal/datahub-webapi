@@ -1,12 +1,16 @@
 package gov.dot.its.datahub.webapi.dao;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -24,40 +28,43 @@ import gov.dot.its.datahub.webapi.model.DHMetrics;
 @Repository
 public class MetricsDaoImpl implements MetricsDao {
 
-	@Value("${datahub.webapi.es.metrics.fields}")
-	private String[] includedFieldsMetrics;
-	@Value("${datahub.webapi.es.limit}")
+    @Value("${datahub.webapi.es.metrics.fields}")
+    private String[] includedFieldsMetrics;
+    @Value("${datahub.webapi.es.limit}")
     private int esDefaultLimit;
     @Value("${datahub.webapi.es.metrics.index}")
-	private String index;
-
+    private String index;
 
     @Autowired
     private ESClientDao esClientDao;
-    
-	@Override
-	public List<DHMetrics> getMetrics(int esDefaultLimit, String[] sourceName) throws IOException {
+
+    @Override
+    public List<DHMetrics> getMetrics(int esDefaultLimit, String[] sourceName) throws IOException {
         SearchRequest searchRequest = new SearchRequest(index);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.size(esDefaultLimit);
-		
-		//the queryBuiklder ?
-		QueryBuilder queryBuilder = this.generateQueryForSourceNames(sourceName);
-		searchSourceBuilder.query(queryBuilder);
-		searchSourceBuilder.fetchSource(includedFieldsMetrics, new String[] {});  //includeFieldsMetrics
-		searchRequest.source(searchSourceBuilder);
+        searchSourceBuilder.size(esDefaultLimit);
+
+        // the queryBuiklder ?
+        QueryBuilder queryBuilder = this.generateQueryForSourceNames(sourceName);
+        searchSourceBuilder.query(queryBuilder);
+        searchSourceBuilder.fetchSource(includedFieldsMetrics, new String[] {}); // includeFieldsMetrics
+        searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse = esClientDao.search(searchRequest, RequestOptions.DEFAULT);
         SearchHit[] searchHits = searchResponse.getHits().getHits();
-        
+
         List<DHMetrics> result = new ArrayList<>();
-        for(SearchHit hit : searchHits)
-        {
+        for (SearchHit hit : searchHits) {
             Map<String, Object> sourceMap = hit.getSourceAsMap();
             
             ObjectMapper mapper = new ObjectMapper();
+            mapper.setDateFormat(new StdDateFormat());
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             DHMetrics dataMetrics = mapper.convertValue(sourceMap, DHMetrics.class);
+            dataMetrics.setTimeStamp((String) sourceMap.get("timestamp"));
             result.add(dataMetrics);
 
         }

@@ -1,13 +1,11 @@
 package gov.dot.its.datahub.webapi.model;
 
-import java.security.Timestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 
 public class DHMetrics {
-
-    @JsonFormat(shape = Shape.STRING)
-    private Timestamp timeStamp;
+    
+    private String timeStamp;
     private String dhId;
     private String dhSourceName;
     private String userSegment;
@@ -17,7 +15,7 @@ public class DHMetrics {
     public DHMetrics() {
     }
     
-    public DHMetrics(Timestamp timeStamp, String dhId, String dhSourceName, String userSegment, String accessType,
+    public DHMetrics(String timeStamp, String dhId, String dhSourceName, String userSegment, String accessType,
             int count) {
         this.timeStamp = timeStamp;
         this.dhId = dhId;
@@ -27,11 +25,12 @@ public class DHMetrics {
         this.count = count;
     }
     
-    public Timestamp getTimeStamp() {
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    public String getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(Timestamp timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 
