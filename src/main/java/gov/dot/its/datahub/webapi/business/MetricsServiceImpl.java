@@ -35,14 +35,14 @@ public class MetricsServiceImpl implements MetricsService {
 	private MetricsDao metricsDao;
 	
 	@Override
-	public ApiResponse<List<DHMetrics>> getMetrics(HttpServletRequest request, String[] sourceName) {
+	public ApiResponse<List<DHMetrics>> getMetrics(HttpServletRequest request) {
 
 		final String RESPONSE_FIND_ALL = "Response: Find all, {}";
 		ApiResponse<List<DHMetrics> > apiResponse = new ApiResponse<>();
 		List<ApiError> errors = new ArrayList<>();
 
 		try {
-			List<DHMetrics> data = metricsDao.getMetrics(esDefaultLimit, sourceName); // DHRepository or use DataAssets
+			List<DHMetrics> data = metricsDao.getMetrics(esDefaultLimit); // DHRepository or use DataAssets
 
 			if (data != null && !data.isEmpty()) {
 				apiResponse.setResponse(HttpStatus.OK, data, null, errors, request);
@@ -60,5 +60,34 @@ public class MetricsServiceImpl implements MetricsService {
 		}
 		return apiResponse;
 
+	}
+
+	@Override
+	public ApiResponse<List<DHMetrics>> getMetricsBySource(HttpServletRequest request, String dhSourceName) throws IOException {
+		// TODO Auto-generated method stub
+
+		final String RESPONSE_FIND_ALL = "Response: Find by dhSourceName, {}";
+		ApiResponse<List<DHMetrics> > apiResponse = new ApiResponse<>();
+		List<ApiError> errors = new ArrayList<>();
+
+		try {
+			List<DHMetrics> data = metricsDao.getMetrics(esDefaultLimit, dhSourceName); // DHRepository or use DataAssets
+
+			if (data != null && !data.isEmpty()) {
+				apiResponse.setResponse(HttpStatus.OK, data, null, errors, request);
+				logger.info(RESPONSE_FIND_ALL, HttpStatus.OK);
+				
+			} else {
+				apiResponse.setResponse(HttpStatus.NO_CONTENT, null, null, null, request);
+				logger.info(RESPONSE_FIND_ALL, HttpStatus.NO_CONTENT);
+				
+			}
+
+		} catch (ElasticsearchStatusException e) {
+			logger.info(apiUtils.stringFormat(MESSAGE_TEMPLATE, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+			apiResponse.setResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null, apiUtils.getErrorsFromException(errors, e), request);
+		}
+
+		return apiResponse;
 	}
 }
