@@ -1,7 +1,9 @@
 package gov.dot.its.datahub.webapi.business;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +66,7 @@ public class MetricsServiceImpl implements MetricsService {
 
 	@Override
 	public ApiResponse<List<DHMetrics>> getMetricsBySource(HttpServletRequest request, String dhSourceName) throws IOException {
-		// TODO Auto-generated method stub
+	
 
 		final String RESPONSE_FIND_ALL = "Response: Find by dhSourceName, {}";
 		ApiResponse<List<DHMetrics> > apiResponse = new ApiResponse<>();
@@ -72,6 +74,35 @@ public class MetricsServiceImpl implements MetricsService {
 
 		try {
 			List<DHMetrics> data = metricsDao.getMetrics(esDefaultLimit, dhSourceName); // DHRepository or use DataAssets
+
+			if (data != null && !data.isEmpty()) {
+				apiResponse.setResponse(HttpStatus.OK, data, null, errors, request);
+				logger.info(RESPONSE_FIND_ALL, HttpStatus.OK);
+				
+			} else {
+				apiResponse.setResponse(HttpStatus.NO_CONTENT, null, null, null, request);
+				logger.info(RESPONSE_FIND_ALL, HttpStatus.NO_CONTENT);
+				
+			}
+
+		} catch (ElasticsearchStatusException e) {
+			logger.info(apiUtils.stringFormat(MESSAGE_TEMPLATE, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+			apiResponse.setResponse(HttpStatus.INTERNAL_SERVER_ERROR, null, null, apiUtils.getErrorsFromException(errors, e), request);
+		}
+
+		return apiResponse;
+	}
+
+	@Override
+	public ApiResponse<List<DHMetrics>> getMetricsByDate(HttpServletRequest request, String beginDate, String endDate) throws IOException, ParseException {
+	
+
+		final String RESPONSE_FIND_ALL = "Response: Find by Date range, {}";
+		ApiResponse<List<DHMetrics> > apiResponse = new ApiResponse<>();
+		List<ApiError> errors = new ArrayList<>();
+
+		try {
+			List<DHMetrics> data = metricsDao.getMetrics(esDefaultLimit, beginDate, endDate); // DHRepository or use DataAssets
 
 			if (data != null && !data.isEmpty()) {
 				apiResponse.setResponse(HttpStatus.OK, data, null, errors, request);
